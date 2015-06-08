@@ -1,22 +1,21 @@
 module Katello
   class Api::V2::ContentViewFilterRulesController < Api::V2::ApiController
+    include Katello::Concerns::FilteredAutoCompleteSearch
+
     before_filter :find_filter
-    before_filter :find_rule, :except => [:index, :create]
+    before_filter :find_rule, :except => [:index, :create, :auto_complete_search]
 
     api :GET, "/content_view_filters/:content_view_filter_id/rules", N_("List filter rules")
     param :content_view_filter_id, :identifier, :desc => N_("filter identifier"), :required => true
     def index
-      options = sort_params
-      options[:load_records?] = true
-      options[:filters] = [{ :terms => { :id => ContentViewFilter.rule_ids_for(@filter) } }]
-
-      @search_service.model = ContentViewFilter.rule_class_for(@filter)
-      respond(:collection => item_search(ContentViewFilter.rule_class_for(@filter), params, options))
+      options  = {:includes => [:filters]} 
+      respond(:collection => scoped_search(index_relation.uniq, :name, :description, options))
     end
 
-    api :POST, "/content_view_filters/:content_view_filter_id/rules",
-        N_("Create a filter rule. The parameters included should be based upon the filter type.")
-    param :content_view_filter_id, :identifier, :desc => N_("filter identifier"), :required => true
+    def index_relation
+      ContentViewFilter.rules_for(@filter)
+    end
+
     param :name, String, :desc => N_("package or package group: name")
     param :version, String, :desc => N_("package: version")
     param :min_version, String, :desc => N_("package: minimum version")

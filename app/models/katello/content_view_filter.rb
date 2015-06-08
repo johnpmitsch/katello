@@ -11,7 +11,7 @@ module Katello
     belongs_to :content_view,
                :class_name => "Katello::ContentView",
                :inverse_of => :filters
-
+    
     # rubocop:disable HasAndBelongsToMany
     # TODO: change these into has_many :through associations
     has_and_belongs_to_many :repositories,
@@ -90,6 +90,20 @@ module Katello
         filter.package_group_rule_ids
       when ContentViewErratumFilter.name
         filter.erratum_rule_ids
+      else
+        params = { :content_type => filter.type, :content_types => CONTENT_TYPES.join(", ") }
+        fail _("Invalid content type '%{ content_type }' provided. Content types can be one of %{ content_types }") % params
+      end
+    end
+
+    def self.rules_for(filter)
+      case filter.type
+      when ContentViewPackageFilter.name
+        filter.package_rules
+      when ContentViewPackageGroupFilter.name
+        filter.package_group_rules
+      when ContentViewErratumFilter.name
+        filter.erratum_rules
       else
         params = { :content_type => filter.type, :content_types => CONTENT_TYPES.join(", ") }
         fail _("Invalid content type '%{ content_type }' provided. Content types can be one of %{ content_types }") % params
