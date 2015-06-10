@@ -13,7 +13,7 @@ angular.module('Bastion.content-views').factory('Filter',
         return BastionResource('/katello/api/v2/content_view_filters/:filterId/:action',
             {filterId: '@id', 'content_view_id': '@content_view.id'},
             {
-                autocomplete: {method: 'GET', isArray: true, params: {filterId: 'auto_complete_search'}},
+                //autocomplete: {method: 'GET', isArray: true, params: {filterId: 'auto_complete_search'}},
                 update: {method: 'PUT'},
                 availableErrata: {
                     method: 'GET',

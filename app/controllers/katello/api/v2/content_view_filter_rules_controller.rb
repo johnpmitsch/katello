@@ -1,9 +1,8 @@
 module Katello
   class Api::V2::ContentViewFilterRulesController < Api::V2::ApiController
-    include Katello::Concerns::FilteredAutoCompleteSearch
 
     before_filter :find_filter
-    before_filter :find_rule, :except => [:index, :create, :auto_complete_search]
+    before_filter :find_rule, :except => [:index, :create]
 
     api :GET, "/content_view_filters/:content_view_filter_id/rules", N_("List filter rules")
     param :content_view_filter_id, :identifier, :desc => N_("filter identifier"), :required => true
