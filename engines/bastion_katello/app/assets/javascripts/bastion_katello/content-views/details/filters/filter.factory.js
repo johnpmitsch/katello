@@ -17,11 +17,13 @@ angular.module('Bastion.content-views').factory('Filter',
                 update: {method: 'PUT'},
                 availableErrata: {
                     method: 'GET',
-                    params: {action: 'errata', 'available_for': 'content_view_filter'}
+                    params: {action: 'errata', 'available_for': 'content_view_filter'},
+                    autocomplete: {method: 'GET', isArray: true, params: {filterId: 'auto_complete_search'}}
                 },
                 errata: {
                     method: 'GET',
-                    params: {action: 'errata'}
+                    params: {action: 'errata'},
+                    autocomplete: {method: 'GET', isArray: true, params: {filterId: 'auto_complete_search'}}
                 },
                 availablePackageGroups: {
                     method: 'GET',

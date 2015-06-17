@@ -65,6 +65,9 @@ Katello::Engine.routes.draw do
           end
           api_resources :content_view_puppet_modules
           api_resources :filters, :controller => :content_view_filters do
+            collection do
+              get :auto_complete_search
+            end
             member do
               get :available_package_groups
             end
