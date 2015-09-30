@@ -40,15 +40,15 @@ module Katello
     def test_index
       get :index, :repository_id => @repo.id
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
 
       get :index
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
 
       get :index, :organization_id => @repo.organization.id
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
     end
 
     def test_index_with_content_view_version
@@ -58,7 +58,7 @@ module Katello
       get :index, :content_view_version_id => @content_view_version.id
 
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
     end
 
     def test_index_with_environment_id
@@ -68,7 +68,7 @@ module Katello
       get :index, :environment_id => environment.id
 
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
     end
 
     def test_index_with_filters
@@ -95,7 +95,7 @@ module Katello
 
       get :index, :cve => cve.cve_id
       assert_response :success
-      assert_template %w(katello/api/v2/errata/index)
+      assert_template "katello/api/v2/errata/index"
     end
 
     def test_index_protected
@@ -109,7 +109,7 @@ module Katello
       get :show, :repository_id => @repo.id, :id => errata.errata_id
 
       assert_response :success
-      assert_template %w(katello/api/v2/errata/show)
+      assert_template "katello/api/v2/errata/show"
     end
 
     def test_show_errata_not_found
@@ -123,12 +123,12 @@ module Katello
 
       get :compare, :content_view_version_ids => [@lib_repo.content_view_version_id, @view_repo.content_view_version_id]
       assert_response :success
-      assert_template %w(katello/api/v2/errata/compare)
+      assert_template "katello/api/v2/errata/compare"
 
       get :compare, :content_view_version_ids => [@lib_repo.content_view_version_id, @view_repo.content_view_version_id],
                     :repository_id => @lib_repo.id
       assert_response :success
-      assert_template %w(katello/api/v2/errata/compare)
+      assert_template "katello/api/v2/errata/compare"
     end
 
     def test_show_protected

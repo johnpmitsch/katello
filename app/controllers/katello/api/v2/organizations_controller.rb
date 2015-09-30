@@ -54,6 +54,7 @@ module Katello
     param :description, String, :desc => N_("description")
     param_group :resource, ::Api::V2::TaxonomiesController
     def create
+      require "pry"; binding.pry
       @organization = Organization.new(params[:organization])
       sync_task(::Actions::Katello::Organization::Create, @organization)
       @organization.reload
