@@ -53,7 +53,6 @@ module Katello
 
     def test_index_with_content_view_version
       @content_view_version = ContentViewVersion.first
-      ContentViewVersion.expects(:readable).returns(stub(:find_by_id => @content_view_version))
 
       get :index, :content_view_version_id => @content_view_version.id
 
@@ -63,7 +62,6 @@ module Katello
 
     def test_index_with_environment_id
       environment = KTEnvironment.first
-      KTEnvironment.expects(:readable).returns(stub(:find_by_id => environment))
 
       get :index, :environment_id => environment.id
 

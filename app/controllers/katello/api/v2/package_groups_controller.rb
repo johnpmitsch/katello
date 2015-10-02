@@ -5,7 +5,6 @@ module Katello
 
     api :GET, "package_groups/:id", N_("show package groups by id")
     def index
-      debugger
       super
     end
 
