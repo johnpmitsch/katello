@@ -23,7 +23,7 @@
       <tbody>
       <tr bst-table-row ng-repeat="version in detailsTable.rows | filter:filterTerm">
         <td bst-table-cell translate>
-          <a ui-sref="content-views.details.version.details({versionId: version.id})" >Version {{ version.version }}</a>
+          <a ui-sref="content-views.details.version.details({versionId: version.id})" >Version {{ version.version | number:1 }}</a>
         </td>
         <td bst-table-cell >
           <a ui-sref="content-views.details.history" ng-hide="hideProgress(version)">

@@ -5,6 +5,7 @@ module Katello
     include Authorization::ContentViewVersion
 
     before_destroy :validate_destroyable!
+    before_save :update_version
 
     belongs_to :content_view, :class_name => "Katello::ContentView", :inverse_of => :content_view_versions
     has_many :content_view_environments, :class_name => "Katello::ContentViewEnvironment",
@@ -42,26 +43,8 @@ module Katello
     scope :non_default_view, -> { joins(:content_view).where("#{Katello::ContentView.table_name}.default" => false) }
 
     scoped_search :on => :content_view_id
-    scoped_search :on => :major, :rename => :version, :complete_value => true, :ext_method => :find_by_version
     scoped_search :in => :repositories, :on => :name, :rename => :repository, :complete_value => true
-
-    def self.find_by_version(_key, operator, value)
-      conditions = ""
-      if ['>', '<', '=', '<=', '>=', "<>", "!=", 'IN', 'NOT IN'].include?(operator) && value.to_f >= 0
-        major, minor = value.split(".")
-        case
-        when /[<>]/ =~ operator
-          minor ||= 0
-          query = where("major #{operator} :major OR (major = :major AND minor #{operator} :minor)", :major => major, :minor => minor)
-        when minor.nil?
-          query = where("major #{operator} (:major)", :major => major)
-        else
-          query = where("major #{operator} (:major) and minor #{operator} (:minor)", :major => major, :minor => minor)
-        end
-        _, conditions = query.to_sql.split("WHERE")
-      end
-      { :conditions => conditions }
-    end
+    scoped_search :on => :version, :complete_value => true
 
     def self.component_of(versions)
       joins(:content_view_version_composites).where("#{Katello::ContentViewVersionComponent.table_name}.composite_version_id" => versions)
@@ -121,8 +104,8 @@ module Katello
       "#{major}.#{minor + 1}"
     end
 
-    def version
-      "#{major}.#{minor}"
+    def update_version
+      self.version = "#{major}.#{minor}".to_f
     end
 
     def repos(env)
