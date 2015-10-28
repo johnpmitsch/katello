@@ -12,16 +12,15 @@ module Katello
       @repo_attrs = {:scratchpad => {:tags => @tags}}
       @repo = Repository.find(katello_repositories(:redis))
 
-      ids = @images.map { |attrs| attrs[:_id] }
-      Runcible::Extensions::Repository.any_instance.stubs(:pulp_docker_image_ids).
-        with(REPO_ID).returns(ids)
+      @docker_image_ids = @images.map { |attrs| attrs[:_id] }
       Runcible::Extensions::DockerImage.any_instance.stubs(:find_all_by_unit_ids).
-        with(ids).returns(@images)
+        with(@docker_image_ids).returns(@images)
       Runcible::Extensions::Repository.any_instance.stubs(:retrieve_with_details).
         with(REPO_ID).returns(@repo_attrs)
     end
 
     def test_index_db_docker_images
+      @repo.expects(:pulp_docker_image_ids).returns(@docker_image_ids).at_least_once
       @repo.index_db_docker_images
       assert_equal 3, DockerImage.count
       assert_equal 3, @repo.docker_images.count
@@ -34,6 +33,7 @@ module Katello
 
     def test_index_db_docker_images_with_duplicate_tags
       @repo.docker_images.create!(:image_id => "abc123")
+      @repo.expects(:pulp_docker_image_ids).returns(@docker_image_ids).at_least_once
       docker_image = @repo.docker_images.first
       @repo.docker_tags.create!(:docker_image => docker_image,
                                 :name => "latest"

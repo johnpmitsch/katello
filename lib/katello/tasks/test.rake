@@ -108,6 +108,21 @@ namespace :test do
         Rake::Task[test_task.name].invoke
       end
 
+      desc "Run the Katello plugin unit auth test suite."
+      task :authorization => ['db:test:prepare'] do
+
+        test_task = Rake::TestTask.new('katello_authorization_test_task') do |t|
+          t.libs << ["test", "#{Katello::Engine.root}/test"]
+          t.test_files = [
+            "#{Katello::Engine.root}/test/models/authorization/*_test.rb",
+          ]
+          t.verbose = true
+        end
+
+        Rake::Task[test_task.name].invoke
+      end
+
+
       desc "Run the Katello plugin unit lib test suite."
       task :lib => ['db:test:prepare'] do
 

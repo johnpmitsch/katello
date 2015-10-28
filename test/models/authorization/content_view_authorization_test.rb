@@ -109,7 +109,7 @@ module Katello
                                           :search => "name=\"#{view.name}\"")
 
       assert_empty(ContentView.readable_products - view.products)
-      assert_equal ContentView.readable_products(view2.products.pluck(:id)), [prod]
+      assert_equal ContentView.readable_products(view2.products.pluck(:id)).first, prod
     end
   end
 end
