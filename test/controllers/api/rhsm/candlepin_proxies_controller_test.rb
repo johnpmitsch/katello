@@ -11,6 +11,8 @@ module Katello
       login_user(User.find(users(:admin)))
       @system = katello_systems(:simple_server)
       @organization = get_organization
+      User.stubs(:consumer?).returns(true)
+      @cp_consumer_user = CpConsumerUser.new
     end
 
     describe "register with activation key should fail"  do
@@ -113,10 +115,9 @@ module Katello
         System.stubs(:where).returns(@system)
         System.any_instance.stubs(:first).returns(@system)
         uuid = @system.uuid
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
-        User.stubs(:current).returns(cp_consumer_user)
+        @cp_consumer_user.uuid = uuid
+        @cp_consumer_user.login = uuid
+        User.stubs(:current).returns(@cp_consumer_user)
         Repository.stubs(:where).with(:relative_path => 'foo').returns([OpenStruct.new(:pulp_id => 'a')])
         Repository.stubs(:where).with(:relative_path => 'bar').returns([OpenStruct.new(:pulp_id => 'b')])
       end
@@ -203,34 +204,24 @@ module Katello
     end
 
     describe "hypervisors_update" do
-      it "hypervisors_update_correct_env_cv" do
+      before do
         @controller.stubs(:authorize_client_or_admin)
         System.stubs(:first).returns(@system)
         uuid = @system.uuid
-        User.stubs(:consumer?).returns(true)
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
-        User.stubs(:current).returns(cp_consumer_user)
+        @cp_consumer_user.uuid = uuid
+        @cp_consumer_user.login = uuid
+        User.stubs(:current).returns(@cp_consumer_user)
         System.stubs(:register_hypervisors).returns({})
         System.expects(:register_hypervisors).with(@system.environment, @system.content_view,
             "owner" => "Empty_Organization", "env" => "library_default_view_library")
+      end
+        
+      it "hypervisors_update_correct_env_cv" do
         post :hypervisors_update
         assert_response 200
       end
 
       it "hypervisors_update_ignore_params" do
-        @controller.stubs(:authorize_client_or_admin)
-        System.stubs(:first).returns(@system)
-        uuid = @system.uuid
-        User.stubs(:consumer?).returns(true)
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
-        User.stubs(:current).returns(cp_consumer_user)
-        System.stubs(:register_hypervisors).returns({})
-        System.expects(:register_hypervisors).with(@system.environment, @system.content_view,
-            "owner" => "Empty_Organization", "env" => "library_default_view_library")
         post(:hypervisors_update, :owner => 'owner', :env => 'dev/dev')
         assert_response 200
       end
@@ -240,11 +231,9 @@ module Katello
       it "can be listed by matching consumer" do
         # Stub out the current user to simulate consumer auth.
         uuid = @system.uuid
-        User.stubs(:consumer?).returns(true)
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
-        User.stubs(:current).returns(cp_consumer_user)
+        @cp_consumer_user.uuid = uuid
+        @cp_consumer_user.login = uuid
+        User.stubs(:current).returns(@cp_consumer_user)
 
         get :available_releases, :id => @system.uuid
         assert_response 200
@@ -253,11 +242,9 @@ module Katello
       it "forbidden with invalid consumer" do
         # Stub out the current user to simulate consumer auth.
         uuid = 4444
-        User.stubs(:consumer?).returns(true)
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
-        User.stubs(:current).returns(cp_consumer_user)
+        @cp_consumer_user.uuid = uuid
+        @cp_consumer_user.login = uuid
+        User.stubs(:current).returns(@cp_consumer_user)
         # Getting the available releases for a different consumer
         # should not be allowed.
         get :available_releases, :id => @system.uuid
@@ -278,9 +265,8 @@ module Katello
 
       it "can be accessed by client" do
         uuid = @system.uuid
-        cp_consumer_user = CpConsumerUser.new
-        cp_consumer_user.uuid = uuid
-        cp_consumer_user.login = uuid
+        @cp_consumer_user.uuid = uuid
+        @cp_consumer_user.login = uuid
         User.stubs(:current).returns(cp_consumer_user)
         get :consumer_show, :id => @system.uuid
         assert_response 200
