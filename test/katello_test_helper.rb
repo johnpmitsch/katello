@@ -90,6 +90,8 @@ class ActionController::TestCase
     set_default_locale
     setup_engine_routes if load_engine_routes
     @controller.stubs(:require_org).returns({})
+    puts 'setup_controller_defaults'
+    puts Permission.pluck(:name).include?("view_activation_keys")
     load_permissions
   end
 
@@ -122,6 +124,8 @@ class ActiveSupport::TestCase
   include FixtureTestCase
 
   before do
+    puts self.class.name
+    puts Permission.pluck(:name).include?("view_activation_keys")
     stub_ping
   end
 

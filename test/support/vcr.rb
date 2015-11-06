@@ -30,6 +30,7 @@ module VCR
 
     def run_with_vcr
       VCR.insert_cassette(cassette_name, :match_requests_on => vcr_matches)
+      debugger
       to_ret = run_without_vcr
       VCR.eject_cassette
       to_ret
