@@ -3,7 +3,6 @@ module Actions
     module Repository
       class IndexContent < Actions::EntryAction
         middleware.use Actions::Middleware::KeepCurrentUser
-        middleware.use Actions::Middleware::ExecuteIfContentsChanged
 
         input_format do
           param :id, Integer
