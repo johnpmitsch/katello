@@ -22,8 +22,9 @@ module Actions
           end
 
           sequence do
-            sync_task = plan_action(Pulp::Repository::Sync, pulp_id: repo.pulp_id, task_id: pulp_sync_task_id)
-            plan_action(Katello::Repository::IndexContent, dependency: sync_task.output[:pulp_tasks], id: repo.id)
+            output = plan_action(Pulp::Repository::Sync, pulp_id: repo.pulp_id, task_id: pulp_sync_task_id).output
+            contents_changed = output[:contents_changed]
+            plan_action(Katello::Repository::IndexContent, :id => repo.id, :contents_changed => contents_changed)
             plan_action(Katello::Foreman::ContentUpdate, repo.environment, repo.content_view, repo)
             plan_action(Katello::Repository::CorrectChecksum, repo)
             concurrence do

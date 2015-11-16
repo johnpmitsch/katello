@@ -70,6 +70,12 @@ module Katello
         collection = System.readable
       end
 
+      if params[:available_for] && params[:available_for] == 'host_collection'
+        system_ids = HostCollection.find(params[:host_collection_id]).systems.pluck(:id)
+        collection = collection.where("id NOT IN (?)", system_ids) unless system_ids.empty?
+        return collection
+      end
+
       collection = collection.where(:content_view_id => params[:content_view_id]) if params[:content_view_id]
       collection = collection.where(:id => Organization.find(params[:organization_id]).systems.map(&:id)) if params[:organization_id]
       collection = collection.where(:environment_id => params[:environment_id]) if params[:environment_id]
@@ -272,6 +278,10 @@ module Katello
     def events
       @events = @system.events.map { |e| OpenStruct.new(e) }
       respond_for_index :collection => @events
+    end
+
+    def available_for_host_collection(host_collection_id)
+      System.where("host_collection_id IS NOT ?", host_collection_id)
     end
 
     private

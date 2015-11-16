@@ -36,12 +36,12 @@ describe('Controller: HostCollectionAddContentHostsController', function() {
     }));
 
     it('attaches the nutupane table to the scope', function() {
-        expect($scope.addContentHostsTable).toBeDefined();
+        expect($scope.detailsTable).toBeDefined();
     });
 
     it('sets the closeItem function to not do anything', function() {
         spyOn($scope, "transitionTo");
-        $scope.addContentHostsTable.closeItem();
+        $scope.detailsTable.closeItem();
         expect($scope.transitionTo).not.toHaveBeenCalled();
     });
 
