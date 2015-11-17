@@ -7,8 +7,10 @@ module Katello
     has_many :key_host_collections, :class_name => "Katello::KeyHostCollection", :dependent => :destroy
     has_many :activation_keys, :through => :key_host_collections
 
-    has_many :system_host_collections, :class_name => "Katello::SystemHostCollection", :dependent => :destroy
-    has_many :systems, :through => :system_host_collections, :class_name => "Katello::System"
+    has_many :system_host_collections, :class_name => "Katello::SystemHostCollection", 
+             :dependent => :destroy, :inverse_of => :host_collection
+    has_many :systems, :through => :system_host_collections,
+             :class_name => "Katello::System", :inverse_of => :host_collections
 
     has_many :jobs, :class_name => "Katello::Job", :as => :job_owner, :dependent => :nullify
 

@@ -25,8 +25,10 @@ module Katello
     has_many :system_activation_keys, :class_name => "Katello::SystemActivationKey", :dependent => :destroy
     has_many :activation_keys, :through => :system_activation_keys
 
-    has_many :system_host_collections, :class_name => "Katello::SystemHostCollection", :dependent => :destroy
-    has_many :host_collections, :through      => :system_host_collections
+    has_many :system_host_collections, :class_name => "Katello::SystemHostCollection",
+             :dependent => :destroy, :inverse_of => :system
+    has_many :host_collections, :through => :system_host_collections,
+             :class_name => "Katello::HostCollection", :inverse_of => :systems
 
     has_many :audits, :class_name => "::Audit", :as => :auditable, :dependent => :destroy
 
