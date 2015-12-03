@@ -292,7 +292,7 @@ module Katello
         if self.content_view.default? || force
           errata_json.each do |erratum_json|
             begin
-              erratum = Erratum.find_or_create_by_uuid(:uuid => erratum_json['_id'])
+              erratum = Erratum.find_or_create_by(uuid: erratum_json['_id'])
             rescue ActiveRecord::RecordNotUnique
               retry
             end
@@ -307,7 +307,7 @@ module Katello
         if self.content_view.default? || force
           rpms_json.each do |rpm_json|
             begin
-              rpm = Rpm.find_or_create_by_uuid(:uuid => rpm_json['_id'])
+              rpm = Rpm.find_or_create_by(uuid: rpm_json['_id'])
             rescue ActiveRecord::RecordNotUnique
               retry
             end
@@ -321,7 +321,7 @@ module Katello
         if self.content_view.default? || force
           puppet_modules_json.each do |puppet_module_json|
             begin
-              puppet_module = Katello::PuppetModule.find_or_create_by_uuid(:uuid => puppet_module_json['_id'])
+              puppet_module = Katello::PuppetModule.find_or_create_by(uuid: puppet_module_json['_id'])
             rescue ActiveRecord::RecordNotUnique
               retry
             end
@@ -355,7 +355,7 @@ module Katello
       def index_db_package_groups
         package_group_json.each do |pg_json|
           begin
-            package_group = Katello::PackageGroup.find_or_create_by_uuid(:uuid => pg_json['_id'])
+            package_group = Katello::PackageGroup.find_or_create_by(uuid: pg_json['_id'])
           rescue ActiveRecord::RecordNotUnique
             retry
           end
@@ -382,7 +382,7 @@ module Katello
         docker_tags.destroy_all
 
         docker_images_json.each do |image_json|
-          image = DockerImage.find_or_create_by_uuid(image_json[:_id])
+          image = DockerImage.find_or_create_by(uuid: image_json[:_id])
           image.update_from_json(image_json)
           create_docker_tags(image, image_json[:tags])
         end
@@ -411,7 +411,7 @@ module Katello
         return if tags.empty?
 
         tags.each do |tag|
-          DockerTag.find_or_create_by_repository_id_and_docker_image_id_and_name!(id, image.id, tag)
+          DockerTag.find_or_create_by(repository_id: id, docker_image_id: image.id, name: tag)
         end
       end
 

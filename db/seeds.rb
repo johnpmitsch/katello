@@ -47,7 +47,7 @@ templates = [{:name => "Katello Kickstart Default",           :source => "kickst
 
 templates.each do |template|
   template[:template] = File.read(File.join(Katello::Engine.root, "app/views/foreman/unattended", template.delete(:source)))
-  ProvisioningTemplate.find_or_create_by_name(template).update_attributes(defaults.merge(template))
+  ProvisioningTemplate.find_or_create_by(name: template).update_attributes(defaults.merge(template))
 end
 
 # Ensure all default templates are seeded into the first org and loc
@@ -57,7 +57,7 @@ ProvisioningTemplate.where(:default => true).each do |template|
 end
 
 # Proxy features
-feature = Feature.find_or_create_by_name('Pulp')
+feature = Feature.find_or_create_by(name: 'Pulp')
 if feature.nil? || feature.errors.any?
   fail "Unable to create proxy feature: #{format_errors feature}"
 end
@@ -110,7 +110,7 @@ permissions = [
 ]
 
 permissions.each do |resource, permission|
-  Permission.find_or_create_by_resource_type_and_name resource, permission
+  Permission.find_or_create_by(resource_type: resource, name: permission)
 end
 
 default_permissions = {
@@ -128,7 +128,7 @@ end
 Setting.find_by_name("dynflow_enable_console").update_attributes!(:value => true) if Rails.env.development?
 
 ["Pulp", "Pulp Node"].each do |input|
-  f = Feature.find_or_create_by_name(input)
+  f = Feature.find_or_create_by(name: input)
   fail "Unable to create proxy feature: #{format_errors f}" if f.nil? || f.errors.any?
 end
 
@@ -157,5 +157,5 @@ notifications = [
 ]
 
 notifications.each do |notification|
-  ::MailNotification.find_or_create_by_name(notification)
+  ::MailNotification.find_or_create_by(name: notification)
 end
