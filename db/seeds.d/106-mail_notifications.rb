@@ -30,7 +30,7 @@ notifications = [
 ]
 
 notifications.each do |notification|
-  ::MailNotification.find_or_create_by_name(notification)
+  ::MailNotification.create(notifications) unless ::MailNotification.where(:name => notification[:name]).exists?
 end
 
 ::User.current = nil
