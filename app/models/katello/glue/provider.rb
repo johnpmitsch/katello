@@ -219,7 +219,7 @@ module Katello
                            :priority => 4, :action => [self, :owner_import, zip_file_path, options],
                            :action_rollback => [self, :del_owner_import])
           pre_queue.create(:name     => "import of products in manifest #{zip_file_path}",
-                           :priority => 5, :action => [self, :import_products_from_cp])
+                           :priority => 5, :action => [self, :find_and_import_products])
           pre_queue.create(:name     => "refresh product repos",
                            :priority => 6, :action => [self, :refresh_existing_products]) if manifest_update && SETTINGS[:katello][:use_pulp]
 
@@ -234,41 +234,40 @@ module Katello
         self.products.each { |p| p.update_repositories }
       end
 
-      # TODO: break up method
-      def import_products_from_cp # rubocop:disable MethodLength
-        product_in_katello_ids = self.organization.providers.redhat.first.products.pluck("cp_id")
-        products_in_candlepin_ids = []
+      def import_product(product_attrs)
+        Glue::Candlepin::Product.import_from_cp(product_attrs) do |p|
+          p.provider = self
+          p.organization_id = self.organization.id
+        end
+        import_logger.info "import of product '#{product_attrs["name"]}' from Candlepin OK"
+        true
+      rescue Errors::SecurityViolation => e
+        # Do not add non-accessible products
+        logger.info "import of product '#{product_attrs["name"]}' from Candlepin failed"
+        import_logger.info e
+        false
+      end
+ 
+      def find_and_import_products
+        katello_product_ids = self.organization.providers.redhat.first.products.pluck("cp_id")
+        candlepin_product_ids = []
 
         marketing_to_engineering_product_ids_mapping.each do |marketing_product_id, engineering_product_ids|
-          engineering_product_ids = engineering_product_ids.uniq
-          products_in_candlepin_ids << marketing_product_id
-          products_in_candlepin_ids.concat(engineering_product_ids)
-          added_eng_products = (engineering_product_ids - product_in_katello_ids).map do |id|
+          katello_product_ids.concat(engineering_product_ids.push(marketing_product_id))
+          new_products = (engineering_product_ids - katello_product_ids).map do |id|
             Resources::Candlepin::Product.get(id)[0]
           end
-          adjusted_eng_products = []
-          added_eng_products.each do |product_attrs|
-            begin
-              Glue::Candlepin::Product.import_from_cp(product_attrs) do |p|
-                p.provider = self
-                p.organization_id = self.organization.id
-              end
-              adjusted_eng_products << product_attrs
-              import_logger.info "import of product '#{product_attrs["name"]}' from Candlepin OK"
-            rescue Errors::SecurityViolation => e
-              # Do not add non-accessible products
-              logger.info "import of product '#{product_attrs["name"]}' from Candlepin failed"
-              import_logger.info e
-            end
+          imported_product_ids = []
+          new_products.each do |product_attrs|
+            successful_import = import_product(product_attrs)
+            imported_product_ids << product_attrs["id"] if successful_import
           end
-
-          product_in_katello_ids.concat(adjusted_eng_products.map { |p| p["id"] })
-
+          katello_product_ids.concat(imported_product_ids)
           marketing_product = Katello::Product.find_by_cp_id(marketing_product_id)
-          marketing_product.destroy if marketing_product
+          marketing_product.destroy if marketing_product && marketing_product.redhat?
         end
 
-        product_to_remove_ids = (product_in_katello_ids - products_in_candlepin_ids).uniq
+        product_to_remove_ids = (katello_product_ids - candlepin_product_ids).uniq
         product_to_remove_ids.each do |cp_id|
           product = Product.find_by_cp_id(cp_id, self.organization)
           Rails.logger.warn "Orphaned Product id #{product.id} found while refreshing/importing manifest."
