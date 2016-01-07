@@ -20,6 +20,20 @@ module Actions
           task
         end
 
+        def finalize
+          check_error_details
+        end
+
+        def check_error_details
+          output[:pulp_tasks].each do |pulp_task|
+            error_details = pulp_task.try(:[], "result").try(:[], "details").try(:[], "rpm").try(:[], "details").try(:[], "trace")
+            error_message = pulp_task.try(:[], "result").try(:[], "details").try(:[], "rpm").try(:[], "details").try(:[], "message")
+            if error_details && error_details.include?("YumDownloadError")
+              fail _("An error occurred during the install \n%{error_message}") % {:error_message => error_message}
+            end
+          end
+        end
+
         def presenter
           Consumer::ContentPresenter.new(self)
         end
