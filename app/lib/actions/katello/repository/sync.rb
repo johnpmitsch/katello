@@ -51,6 +51,7 @@ module Actions
 
         def run
           ForemanTasks.async_task(Repository::CapsuleGenerateAndSync, ::Katello::Repository.find(input[:id]))
+          rescue ::Katello::Errors::CapsuleConnectionException # skip any capsules that cannot be connected to
         end
 
         def humanized_name

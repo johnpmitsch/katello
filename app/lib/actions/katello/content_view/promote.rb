@@ -46,6 +46,7 @@ module Actions
           ForemanTasks.async_task(ContentView::CapsuleGenerateAndSync,
                                   ::Katello::ContentView.find(input[:content_view_id]),
                                   ::Katello::KTEnvironment.find(input[:environment_id]))
+          rescue ::Katello::Errors::CapsuleConnectionException # skip any capsules that cannot be connected to
         end
 
         def rescue_strategy_for_self

@@ -11,6 +11,8 @@ module Actions
         end
 
         def plan(capsule_content, options = {})
+          binding.pry
+          capsule_content.ping_pulp
           action_subject(capsule_content.capsule)
 
           environment = options.fetch(:environment, nil)

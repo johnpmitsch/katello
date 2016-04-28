@@ -151,6 +151,12 @@ module Katello
       nil
     end
 
+    def ping_pulp
+      ::Katello::Ping.pulp_without_auth(self.pulp_url)
+    rescue Errno::EHOSTUNREACH
+      raise ::Katello::Errors::CapsuleConnectionException, _("%s is unreachable" % @capsule.name)
+    end
+
     def self.with_environment(environment, include_default = false)
       features = [SmartProxy::PULP_NODE_FEATURE]
       features << SmartProxy::PULP_FEATURE if include_default
