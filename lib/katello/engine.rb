@@ -268,6 +268,7 @@ module Katello
       load "#{Katello::Engine.root}/lib/katello/tasks/clean_published_repo_directories.rake"
       load "#{Katello::Engine.root}/lib/katello/tasks/virt_who_report.rake"
       load "#{Katello::Engine.root}/lib/katello/tasks/update_subscription_facet_backend_data.rake"
+      load "#{Katello::Engine.root}/lib/katello/tasks/reindex.rake"
 
       load "#{Katello::Engine.root}/lib/katello/tasks/upgrades/2.4/import_package_groups.rake"
       load "#{Katello::Engine.root}/lib/katello/tasks/upgrades/2.4/import_rpms.rake"
