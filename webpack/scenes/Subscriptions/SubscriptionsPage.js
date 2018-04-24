@@ -12,12 +12,18 @@ import { orgId } from '../../services/api';
 import { BLOCKING_FOREMAN_TASK_TYPES, MANIFEST_TASKS_BULK_SEARCH_ID } from './SubscriptionConstants';
 
 class SubscriptionsPage extends Component {
+
   constructor(props) {
     super(props);
 
     this.state = {
       manifestModalOpen: false,
+      selectedRows: [],
     };
+
+    this.onSelectRow = this.onSelectRow.bind(this);
+    this.modifySubscriptions = this.modifySubscriptions.bind(this);
+    this.onSelectAllRows = this.onSelectAllRows.bind(this);
   }
 
   componentDidMount() {
@@ -32,6 +38,53 @@ class SubscriptionsPage extends Component {
       action_types: BLOCKING_FOREMAN_TASK_TYPES,
     }, 10000);
     this.props.loadSubscriptions();
+  }
+
+  onSelectAllRows(event) {
+    const { checked } = event.target;
+    const { subscriptions } = this.props;
+    let subs = [ ...subscriptions.results ];
+    let allSubIds = subs.map(sub => sub.id);
+    //console.log(allSubIds);
+    if (checked) {
+      this.setState({
+        selectedRows: allSubIds
+      })
+    } else {
+      this.setState({
+        selectedRows: []
+      })
+    }
+  }
+
+  onSelectRow(_event, row) {
+    let { selectedRows } = this.state;
+    if (selectedRows.includes(row.id)) {
+      this.setState({
+        selectedRows: selectedRows.filter(e => e !== row.id)
+      })
+    } else {
+      selectedRows.push(row.id)
+      this.setState({
+        selectedRows: selectedRows
+      })
+    }
+  }
+
+  modifySubscriptions() {
+    const { subscriptions } = this.props;
+    const { selectedRows } = this.state;
+    let newSubscriptions = []
+    subscriptions.results.forEach((sub) => {
+      if (selectedRows.includes(sub.id)) {
+        const selectedRow = Object.assign({}, sub, { selected: true });
+        newSubscriptions.push(selectedRow);
+      } else {
+        const unselectedRow = Object.assign({}, sub, { selected: false });
+        newSubscriptions.push(unselectedRow);
+      }
+    })
+    return newSubscriptions
   }
 
   renderSubscriptionTable() {
@@ -56,7 +109,7 @@ class SubscriptionsPage extends Component {
       });
     };
 
-    let bodyMessage;
+   let bodyMessage;
     if (subscriptions.results.length === 0 && subscriptions.searchIsActive) {
       bodyMessage = __('No subscriptions match your search criteria.');
     }
@@ -64,10 +117,11 @@ class SubscriptionsPage extends Component {
     return (
       <Spinner loading={subscriptions.loading} className="small-spacer">
         <Table
-          rows={subscriptions.results}
-          columns={columns}
+          rows={this.modifySubscriptions()}
+          columns={columns(this)}
           emptyState={emptyStateData()}
           bodyMessage={bodyMessage}
+          onSelectAllRows={this.onSelectAllRows}
         />
         <PaginationRow
           viewType="table"
@@ -132,7 +186,10 @@ class SubscriptionsPage extends Component {
                         {__('Export CSV')}
                       </Button>
 
-                      <Button disabled={taskInProgress}>
+                      <Button 
+                        bsStyle="danger"
+                        onClick={() => { console.log("hi") }}
+                        disabled={taskInProgress || this.state.selectedRows.length <= 0}>
                         {__('Delete')}
                       </Button>
                     </FormGroup>
