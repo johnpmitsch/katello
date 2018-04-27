@@ -2,32 +2,65 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Grid, Row, Col, Form, FormGroup } from 'react-bootstrap';
-import { Button, Spinner } from 'patternfly-react';
+import { bindMethods, Button, Spinner } from 'patternfly-react';
 import Table from '../../move_to_foreman/components/common/table';
 import PaginationRow from '../../components/PaginationRow/index';
 import ManageManifestModal from './Manifest/';
 import { columns } from './SubscriptionsTableSchema';
 import Search from '../../components/Search/index';
 import { orgId } from '../../services/api';
+import SubscriptionDeleteModal from './SubscriptionDeleteModal';
 import { BLOCKING_FOREMAN_TASK_TYPES, MANIFEST_TASKS_BULK_SEARCH_ID } from './SubscriptionConstants';
 
 class SubscriptionsPage extends Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       manifestModalOpen: false,
+      subscriptionDeleteModalOpen: false,
       selectedRows: [],
     };
 
-    this.onSelectRow = this.onSelectRow.bind(this);
-    this.modifySubscriptions = this.modifySubscriptions.bind(this);
-    this.onSelectAllRows = this.onSelectAllRows.bind(this);
+    bindMethods(this, [
+      'onSelectRow',
+      'modifySubscriptions',
+      'onSelectAllRows',
+    ]);
   }
 
   componentDidMount() {
     this.loadData();
+  }
+
+  onSelectAllRows(event) {
+    const { checked } = event.target;
+    const { subscriptions } = this.props;
+    const subs = [...subscriptions.results];
+    const allSubIds = subs.map(sub => sub.id);
+    if (checked) {
+      this.setState({
+        selectedRows: allSubIds,
+      });
+    } else {
+      this.setState({
+        selectedRows: [],
+      });
+    }
+  }
+
+  onSelectRow(_event, row) {
+    const { selectedRows } = this.state;
+    if (selectedRows.includes(row.id)) {
+      this.setState({
+        selectedRows: selectedRows.filter(e => e !== row.id),
+      });
+    } else {
+      selectedRows.push(row.id);
+      this.setState({
+        selectedRows,
+      });
+    }
   }
 
   loadData() {
@@ -40,41 +73,10 @@ class SubscriptionsPage extends Component {
     this.props.loadSubscriptions();
   }
 
-  onSelectAllRows(event) {
-    const { checked } = event.target;
-    const { subscriptions } = this.props;
-    let subs = [ ...subscriptions.results ];
-    let allSubIds = subs.map(sub => sub.id);
-    //console.log(allSubIds);
-    if (checked) {
-      this.setState({
-        selectedRows: allSubIds
-      })
-    } else {
-      this.setState({
-        selectedRows: []
-      })
-    }
-  }
-
-  onSelectRow(_event, row) {
-    let { selectedRows } = this.state;
-    if (selectedRows.includes(row.id)) {
-      this.setState({
-        selectedRows: selectedRows.filter(e => e !== row.id)
-      })
-    } else {
-      selectedRows.push(row.id)
-      this.setState({
-        selectedRows: selectedRows
-      })
-    }
-  }
-
   modifySubscriptions() {
     const { subscriptions } = this.props;
     const { selectedRows } = this.state;
-    let newSubscriptions = []
+    const newSubscriptions = [];
     subscriptions.results.forEach((sub) => {
       if (selectedRows.includes(sub.id)) {
         const selectedRow = Object.assign({}, sub, { selected: true });
@@ -83,8 +85,8 @@ class SubscriptionsPage extends Component {
         const unselectedRow = Object.assign({}, sub, { selected: false });
         newSubscriptions.push(unselectedRow);
       }
-    })
-    return newSubscriptions
+    });
+    return newSubscriptions;
   }
 
   renderSubscriptionTable() {
@@ -109,7 +111,7 @@ class SubscriptionsPage extends Component {
       });
     };
 
-   let bodyMessage;
+    let bodyMessage;
     if (subscriptions.results.length === 0 && subscriptions.searchIsActive) {
       bodyMessage = __('No subscriptions match your search criteria.');
     }
@@ -141,6 +143,15 @@ class SubscriptionsPage extends Component {
       this.props.loadSubscriptions({ search });
     };
 
+    const onSubscriptionDeleteModalClose = () => {
+      this.setState({ subscriptionDeleteModalOpen: false });
+    };
+
+    const onDeleteSubscriptions = () => {
+      this.props.deleteSubscriptions(this.state.selectedRows);
+      onSubscriptionDeleteModalClose();
+    };
+
     const getAutoCompleteParams = search => ({
       endpoint: '/subscriptions/auto_complete_search',
       params: {
@@ -153,8 +164,12 @@ class SubscriptionsPage extends Component {
       this.setState({ manifestModalOpen: true });
     };
 
-    const onModalClose = () => {
+    const onManageManifestModalClose = () => {
       this.setState({ manifestModalOpen: false });
+    };
+
+    const showSubscriptionDeleteModal = () => {
+      this.setState({ subscriptionDeleteModalOpen: true });
     };
 
     return (
@@ -186,10 +201,11 @@ class SubscriptionsPage extends Component {
                         {__('Export CSV')}
                       </Button>
 
-                      <Button 
+                      <Button
                         bsStyle="danger"
-                        onClick={() => { console.log("hi") }}
-                        disabled={taskInProgress || this.state.selectedRows.length <= 0}>
+                        onClick={showSubscriptionDeleteModal}
+                        disabled={taskInProgress || this.state.selectedRows.length <= 0}
+                      >
                         {__('Delete')}
                       </Button>
                     </FormGroup>
@@ -198,7 +214,17 @@ class SubscriptionsPage extends Component {
               </Col>
             </Row>
 
-            <ManageManifestModal showModal={this.state.manifestModalOpen} onClose={onModalClose} />
+            <ManageManifestModal
+              showModal={this.state.manifestModalOpen}
+              onClose={onManageManifestModalClose}
+            />
+
+            <SubscriptionDeleteModal
+              showModal={this.state.subscriptionDeleteModalOpen}
+              onClose={onSubscriptionDeleteModalClose}
+              deleteSubscriptions={onDeleteSubscriptions}
+              selectedRows={this.state.selectedRows}
+            />
 
             { this.renderSubscriptionTable() }
           </Col>
@@ -210,6 +236,7 @@ class SubscriptionsPage extends Component {
 
 SubscriptionsPage.propTypes = {
   loadSubscriptions: PropTypes.func.isRequired,
+  deleteSubscriptions: PropTypes.func.isRequired,
   subscriptions: PropTypes.shape({}).isRequired,
   pollBulkSearch: PropTypes.func.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.shape({})),

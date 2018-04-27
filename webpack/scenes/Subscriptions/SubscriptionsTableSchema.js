@@ -1,11 +1,11 @@
 import React from 'react';
 import { Icon } from 'patternfly-react';
 import helpers from '../../move_to_foreman/common/helpers';
-import { 
-  selectionHeaderCellFormatter, 
-  selectionCellFormatter, 
-  headerFormat, 
-  cellFormat
+import {
+  selectionHeaderCellFormatter,
+  selectionCellFormatter,
+  headerFormat,
+  cellFormat,
 } from '../../move_to_foreman/components/common/table';
 
 export const columns = component => [
@@ -16,24 +16,21 @@ export const columns = component => [
       props: {
         index: 0,
         rowSpan: 1,
-        colSpan: 1
+        colSpan: 1,
       },
-      customFormatters: [selectionHeaderCellFormatter]
+      customFormatters: [selectionHeaderCellFormatter],
     },
     cell: {
       props: {
-        index: 0
+        index: 0,
       },
       formatters: [
-        (value, { rowData, rowIndex }) => {
-          console.log(value)
-          return selectionCellFormatter(
-            { rowData, rowIndex },
-            component.onSelectRow
-          );
-        }
-      ]
-    }
+        (value, { rowData, rowIndex }) => selectionCellFormatter(
+          { rowData, rowIndex },
+          component.onSelectRow,
+        ),
+      ],
+    },
   },
   {
     property: 'id',
@@ -41,8 +38,8 @@ export const columns = component => [
       label: __('Name'),
       formatters: [headerFormat],
       props: {
-        index: 1
-      }
+        index: 1,
+      },
     },
     cell: {
       formatters: [
@@ -62,8 +59,8 @@ export const columns = component => [
       label: __('SKU'),
       formatters: [headerFormat],
       props: {
-        index: 2
-      }
+        index: 2,
+      },
     },
     cell: {
       formatters: [cellFormat],
@@ -75,8 +72,8 @@ export const columns = component => [
       label: __('Contract'),
       formatters: [headerFormat],
       props: {
-        index: 3
-      }
+        index: 3,
+      },
     },
     cell: {
       formatters: [cellFormat],
@@ -88,8 +85,8 @@ export const columns = component => [
       label: __('Start Date'),
       formatters: [headerFormat],
       props: {
-        index: 4
-      }
+        index: 4,
+      },
     },
     cell: {
       formatters: [cellFormat],
@@ -101,8 +98,8 @@ export const columns = component => [
       label: __('End Date'),
       formatters: [headerFormat],
       props: {
-        index: 5
-      }
+        index: 5,
+      },
     },
     cell: {
       formatters: [cellFormat],
@@ -114,8 +111,8 @@ export const columns = component => [
       label: __('Requires Virt-Who'),
       formatters: [headerFormat],
       props: {
-        index: 6
-      }
+        index: 6,
+      },
     },
     cell: {
       formatters: [
@@ -133,8 +130,8 @@ export const columns = component => [
       label: __('Consumed'),
       formatters: [headerFormat],
       props: {
-        index: 7
-      }
+        index: 7,
+      },
     },
     cell: {
       formatters: [cellFormat],
@@ -146,8 +143,8 @@ export const columns = component => [
       label: __('Entitlements'),
       formatters: [headerFormat],
       props: {
-        index: 8
-      }
+        index: 8,
+      },
     },
     cell: {
       formatters: [
@@ -158,7 +155,7 @@ export const columns = component => [
         ),
       ],
     },
-  }
+  },
 ];
 
 export default columns;

@@ -6,6 +6,9 @@ import {
   SUBSCRIPTIONS_REQUEST,
   SUBSCRIPTIONS_SUCCESS,
   SUBSCRIPTIONS_FAILURE,
+  DELETE_SUBSCRIPTIONS_REQUEST,
+  DELETE_SUBSCRIPTIONS_SUCCESS,
+  DELETE_SUBSCRIPTIONS_FAILURE,
   MANIFEST_TASKS_BULK_SEARCH_ID,
 } from './SubscriptionConstants';
 
@@ -14,6 +17,7 @@ const initialState = initialApiState;
 export default (state = initialState, action) => {
   switch (action.type) {
     case SUBSCRIPTIONS_REQUEST:
+    case DELETE_SUBSCRIPTIONS_REQUEST:
       return state.set('loading', true).set('tasks', []);
 
     case SUBSCRIPTIONS_SUCCESS: {
@@ -35,7 +39,11 @@ export default (state = initialState, action) => {
       });
     }
 
+    case DELETE_SUBSCRIPTIONS_SUCCESS:
+      return state.set('loading', false);
+
     case SUBSCRIPTIONS_FAILURE:
+    case DELETE_SUBSCRIPTIONS_FAILURE:
       return state.merge({
         error: action.error,
         loading: false,
