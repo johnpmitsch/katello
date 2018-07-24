@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { Button } from 'patternfly-react';
+import { Button, TypeAheadSelect } from 'patternfly-react';
 import { Form, FormGroup } from 'react-bootstrap';
 
 import { loadEnabledRepos } from '../../../redux/actions/RedHatRepositories/enabled';
@@ -104,6 +104,12 @@ class SearchBar extends Component {
               .map(({ value }) => value);
             this.onSelectFilterType(values);
           }}
+        />
+
+        <TypeAheadSelect
+          options={['hi']}
+          labelKey="country"
+          placeholder="Choose a state..."
         />
 
         <FormGroup>
