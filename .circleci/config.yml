@@ -1,8 +1,48 @@
 version: 2.0
+defaults: &defaults
+  working_directory: ~/katello
+  docker:
+    - image: circleci/ruby:2.5
+      BUNDLE_PATH: vendor/bundle
+      DATABASE_URL: "postgresql://root@localhost/katello?pool=5"
+
+    - image: circleci/postgres:9.3-alpine-ram
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_DB: katello
+
+    - image: circleci/node:6
+
 jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.4.2-jessie-node
+  bundle-install:
+    <<: *defaults
     steps:
       - checkout
-      - run: echo "Hello World"
+      - run: cd ~ && git clone https://github.com/theforeman/foreman.git
+      - attach_workspace:
+          at: ~/katello
+      - run: 
+          name: Setup system libraries
+          command: |
+            dockerize -wait tcp://localhost:5432 -timeout 1m
+            sudo cp /etc/apt/sources.list /etc/apt/sources.list~
+            sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+            sudo apt-get update
+            sudo apt-get build-dep -y ruby-libvirt
+            cd ~/foreman && bundle install
+      - run:
+          name: Listing contents
+          command: |
+            ls -al ~
+            ls -al ~/foreman
+            pwd
+      - persist_to_workspace:
+          root: .. # relative to ~/katello, so persists ~
+          paths:
+            - .
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - bundle-install
