@@ -71,6 +71,19 @@ module Katello
       respond :resource => @rule
     end
 
+    api :GET,
+        "/content_view_filters/:content_view_filter_id/rules/:id/matching_content",
+        N_("Show content in Content View that matches the rule. Only package filters are currently supported")
+    param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true
+    param :id, :number, :desc => N_("rule identifier"), :required => true
+    def matching_content
+      unless @filter.type == Katello::ContentViewPackageFilter.to_s
+        fail "Only Package Filters can return matching content at this time"
+      end
+
+      respond_with_template_resource(params[:action], "content_view_filter_rules", resource: @rule)
+    end
+
     api :PUT, "/content_view_filters/:content_view_filter_id/rules/:id",
         N_("Update a filter rule. The parameters included should be based upon the filter type.")
     param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true

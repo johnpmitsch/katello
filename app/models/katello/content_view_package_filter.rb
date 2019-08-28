@@ -31,8 +31,6 @@ module Katello
       { 'filename' => { "$in" => package_filenames } } unless package_filenames.empty?
     end
 
-    protected
-
     def query_rpms(repo, rule)
       query_name = rule.name.tr("*", "%")
       query = Rpm.in_repositories(repo).non_modular.where("#{Rpm.table_name}.name ilike ?", query_name)

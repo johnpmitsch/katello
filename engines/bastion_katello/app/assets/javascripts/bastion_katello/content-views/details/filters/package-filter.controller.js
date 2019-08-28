@@ -137,6 +137,27 @@ angular.module('Bastion.content-views').controller('PackageFilterController',
             });
         };
 
+        $scope.getMatchingContent = function (rule) {
+            var promise, success, failure;
+
+            success = function (result) {
+                if (result["matching_content"] && result["matching_content"].length > 0) {
+                  return rule.matchingContent = result["matching_content"].join(', ');
+                } else {
+                  rule.matchingContent = null;
+                  return Notification.setWarningMessage("No matching content found!");
+                }
+            };
+
+            failure = function(response) {
+              return Notification.setErrorMessage(response.data.displayMessage);
+            }
+
+            promise = Rule.matchingContent({filterId: $scope.filter.id}, rule).$promise;
+
+            return promise.then(success).catch(failure)
+        }
+
         $scope.fetchAutocompleteName = function (term) {
             var repositoryIds = $scope.contentView['repository_ids'],
                 promise;

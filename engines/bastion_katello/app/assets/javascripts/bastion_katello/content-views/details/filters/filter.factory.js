@@ -59,7 +59,7 @@ angular.module('Bastion.content-views').factory('Filter',
                     method: 'GET',
                     params: {action: 'package_groups'}
                 }
-            }
+           }
         );
 
     }]

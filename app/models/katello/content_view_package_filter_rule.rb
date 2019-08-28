@@ -22,5 +22,14 @@ module Katello
         errors.add(:base, "This package filter rule already exists.")
       end
     end
+
+    def matching_rpms
+      filter = self.filter
+      content_view_repos = filter.content_view.repositories
+      rpms = content_view_repos.map do |repo|
+        filter.query_rpms(repo, self)
+      end
+      rpms.flatten.uniq
+    end
   end
 end
