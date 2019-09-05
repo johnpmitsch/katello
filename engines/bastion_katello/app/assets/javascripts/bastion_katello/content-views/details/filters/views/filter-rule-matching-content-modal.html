@@ -1,0 +1,24 @@
+<div data-extend-template="components/views/bst-modal.html">
+  <h4 data-block="modal-header">Matching Content</h4>
+
+  <div data-block="modal-body">
+   <div ng-show="rule.matchingContent">
+      <p ng-show="rule.matchingContent.length === 0">No matching content found!</p>
+      <div ng-hide="rule.matchingContent.length === 0">
+        <p>
+          <span translate><b>The following content matches the filter rule:</b></span>
+        </p>
+        <ul>
+          <li ng-repeat="content in rule.matchingContent track by $index">{{ content }}</li>
+        </ul>
+      </div>
+    </div>
+    <div ng-hide="rule.matchingContent">
+      <i class="fa fa-spinner fa-spin"></i>
+    </div>
+  </div>
+
+  <div data-block="modal-footer">
+    <button class="btn btn-default" ng-click="cancel()" translate>Close</button>
+  </div>
+</div>

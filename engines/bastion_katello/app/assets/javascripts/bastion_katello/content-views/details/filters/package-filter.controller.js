@@ -11,12 +11,13 @@
  * @requires Rule
  * @requires Package
  * @requires Notification
- *
+ * @requires $uibModal
  * @description
  *   Handles package filter rules for a content view.
  */
 angular.module('Bastion.content-views').controller('PackageFilterController',
-    ['$scope', '$location', 'translate', 'Nutupane', 'CurrentOrganization', 'Filter', 'Rule', 'Package', 'Notification', function ($scope, $location, translate, Nutupane, CurrentOrganization, Filter, Rule, Package, Notification) {
+    ['$scope', '$location', 'translate', 'Nutupane', 'CurrentOrganization', 'Filter', 'Rule', 'Package', 'Notification', '$uibModal',
+     function ($scope, $location, translate, Nutupane, CurrentOrganization, Filter, Rule, Package, Notification, $uibModal) {
         var nutupane, params;
 
         function failure(response) {
@@ -140,12 +141,20 @@ angular.module('Bastion.content-views').controller('PackageFilterController',
         $scope.getMatchingContent = function (rule) {
             var promise, success, failure;
 
+            $uibModal.open({
+                templateUrl: 'content-views/details/filters/views/filter-rule-matching-content-modal.html',
+                controller: 'FilterRuleMatchingContentModal',
+                size: 'md',
+                resolve: {
+                    rule: rule
+                }
+            }).closed.then(function () {});
+
             success = function (result) {
                 if (result["matching_content"] && result["matching_content"].length > 0) {
-                  return rule.matchingContent = result["matching_content"].join(', ');
-                } else {
-                  rule.matchingContent = null;
-                  return Notification.setWarningMessage("No matching content found!");
+                  return rule.matchingContent = result["matching_content"]
+               } else {
+                  return rule.matchingContent = [];
                 }
             };
 
@@ -154,7 +163,6 @@ angular.module('Bastion.content-views').controller('PackageFilterController',
             }
 
             promise = Rule.matchingContent({filterId: $scope.filter.id}, rule).$promise;
-
             return promise.then(success).catch(failure)
         }
 

@@ -16,5 +16,6 @@ angular.module('Bastion.content-views').controller('FilterDetailsController',
         $scope.updateFilter = function (filter) {
             filter.$update();
         };
+
     }]
 );

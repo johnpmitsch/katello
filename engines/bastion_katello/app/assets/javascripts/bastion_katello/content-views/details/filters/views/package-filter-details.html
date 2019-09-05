@@ -167,10 +167,6 @@
               <span translate>Show Matching Content</span>
             </button>
 
-            <div ng-show="rule.matchingContent">
-              {{ rule.matchingContent }}
-            </div>
-
             <button bst-save-control
                     on-cancel="restorePrevious(rule); rule.editMode = false"
                     on-save="saveRule(rule)"
