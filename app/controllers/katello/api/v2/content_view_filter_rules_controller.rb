@@ -67,21 +67,20 @@ module Katello
     api :GET, "/content_view_filters/:content_view_filter_id/rules/:id", N_("Show filter rule info")
     param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true
     param :id, :number, :desc => N_("rule identifier"), :required => true
+    param :matching_content, :bool,
+          :desc => N_("Show content in Content View that matches the rule. Only package filters are " +
+                      "currently supported. Defaults to false.")
     def show
-      respond :resource => @rule
-    end
-
-    api :GET,
-        "/content_view_filters/:content_view_filter_id/rules/:id/matching_content",
-        N_("Show content in Content View that matches the rule. Only package filters are currently supported")
-    param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true
-    param :id, :number, :desc => N_("rule identifier"), :required => true
-    def matching_content
-      unless @filter.type == Katello::ContentViewPackageFilter.to_s
-        fail "Only Package Filters can return matching content at this time"
+      locals = {}
+      if ::Foreman::Cast.to_bool(params[:matching_content] ||= false)
+        if @filter.type == Katello::ContentViewPackageFilter.to_s
+          locals[:matching_content] = @rule.matching_rpms
+        else
+          fail "Only Package Filters can return matching content at this time"
+        end
       end
 
-      respond_with_template_resource(params[:action], "content_view_filter_rules", resource: @rule)
+      respond :resource => @rule, :locals => locals
     end
 
     api :PUT, "/content_view_filters/:content_view_filter_id/rules/:id",

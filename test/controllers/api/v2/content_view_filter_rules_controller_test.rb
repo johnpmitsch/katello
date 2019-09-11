@@ -92,6 +92,8 @@ module Katello
 
       assert_response :success
       assert_template 'api/v2/content_view_filter_rules/show'
+      body = JSON.parse(response.body)
+      assert_nil body["matching_content"] # should only show up with the matching_content parameter
     end
 
     def test_mismatched_filter_and_rule
@@ -161,7 +163,11 @@ module Katello
     end
 
     def test_matching_content
-      get :matching_content, params: { :content_view_filter_id => @filter.id, :id => @one_package_rule.id }
+      get :show, params: {
+        content_view_filter_id: @filter.id,
+        id: @one_package_rule.id,
+        matching_content: true
+      }
 
       assert_response :success
       body = JSON.parse(response.body)
@@ -169,7 +175,11 @@ module Katello
     end
 
     def test_matching_content_rule_type_not_supported
-      get :matching_content, params: { :content_view_filter_id => @package_group_filter.id, :id => @package_group_rule.id }
+      get :show, params: {
+        content_view_filter_id: @package_group_filter.id,
+        id: @package_group_rule.id,
+        matching_content: true
+      }
 
       assert_response :error
       body = JSON.parse(response.body)
