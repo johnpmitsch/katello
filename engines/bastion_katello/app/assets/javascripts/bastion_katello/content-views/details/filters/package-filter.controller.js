@@ -139,7 +139,9 @@ angular.module('Bastion.content-views').controller('PackageFilterController',
         };
 
         $scope.getMatchingContent = function (rule) {
-            var promise, success, failure;
+            var promise, mcSuccess, mcFailure;
+
+            rule.matchingContent = null;
 
             $uibModal.open({
                 templateUrl: 'content-views/details/filters/views/filter-rule-matching-content-modal.html',
@@ -150,21 +152,21 @@ angular.module('Bastion.content-views').controller('PackageFilterController',
                 }
             }).closed.then(function () {});
 
-            success = function (result) {
+            mcSuccess = function (result) {
                 if (result["matching_content"] && result["matching_content"].length > 0) {
-                  return rule.matchingContent = result["matching_content"]
-               } else {
-                  return rule.matchingContent = [];
+                    rule.matchingContent = result["matching_content"];
+                } else {
+                    rule.matchingContent = [];
                 }
             };
 
-            failure = function(response) {
-              return Notification.setErrorMessage(response.data.displayMessage);
-            }
+            mcFailure = function(response) {
+                return Notification.setErrorMessage(response.data.displayMessage);
+            };
 
             promise = Rule.matchingContent({filterId: $scope.filter.id}, rule).$promise;
-            return promise.then(success).catch(failure)
-        }
+            return promise.then(mcSuccess).catch(mcFailure);
+        };
 
         $scope.fetchAutocompleteName = function (term) {
             var repositoryIds = $scope.contentView['repository_ids'],

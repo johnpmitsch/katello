@@ -68,7 +68,7 @@ module Katello
     param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true
     param :id, :number, :desc => N_("rule identifier"), :required => true
     param :matching_content, :bool,
-          :desc => N_("Show content in Content View that matches the rule. Only package filters are " +
+          :desc => N_("Show content in Content View that matches the rule. Only package filters are " \
                       "currently supported. Defaults to false.")
     def show
       locals = {}

@@ -71,4 +71,15 @@ describe('Factory: Rule', function() {
         });
     });
 
+    it('provides a way to get a rule with matching content', function() {
+        var ruleWithMatchingContent = rules.results[0];
+        ruleWithMatchingContent["matching_content"] = ['foo'];
+
+        $httpBackend.expectGET('katello/api/v2/content_view_filters/1/rules/1?matching_content=true')
+                    .respond(ruleWithMatchingContent);
+
+        Rule.matchingContent({filterId: 1, ruleId: 1}, function (rule) {
+            expect(rule).toBeDefined();
+        });
+    });
 });

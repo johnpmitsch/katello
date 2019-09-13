@@ -17,5 +17,4 @@ attributes :date_type, :if => lambda { |rule| rule.respond_to?(:date_type) }
 attributes :module_stream_id, :if => lambda { |rule| rule.respond_to?(:module_stream_id) && !rule.module_stream_id.blank? }
 node(:matching_content) { locals[:matching_content] } if locals[:matching_content]
 
->>>>>>> Refs #27738 - Moves matching content to show
 extends 'katello/api/v2/common/timestamps'
