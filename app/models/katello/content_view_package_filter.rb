@@ -43,7 +43,7 @@ module Katello
       elsif rule.min_version.present? || rule.max_version.present?
         query = query.search_version_range(rule.min_version, rule.max_version)
       end
-      query.pluck("#{Rpm.table_name}.filename")
+      query.default_sort.pluck("#{Rpm.table_name}.filename")
     end
   end
 end

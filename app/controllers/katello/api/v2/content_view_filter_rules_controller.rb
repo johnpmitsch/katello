@@ -68,7 +68,7 @@ module Katello
     param :content_view_filter_id, :number, :desc => N_("filter identifier"), :required => true
     param :id, :number, :desc => N_("rule identifier"), :required => true
     param :matching_content, :bool,
-          :desc => N_("Show content in Content View that matches the rule. Only package filters are " \
+          :desc => N_("Show content in Content View that matches the rule. Only RPM filters are " \
                       "currently supported. Defaults to false.")
     def show
       locals = {}
@@ -76,7 +76,7 @@ module Katello
         if @filter.type == Katello::ContentViewPackageFilter.to_s
           locals[:matching_content] = @rule.matching_rpms
         else
-          fail "Only Package Filters can return matching content at this time"
+          fail "Only RPM Filters can return matching content at this time"
         end
       end
 
