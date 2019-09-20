@@ -30,4 +30,7 @@ Katello::Engine.routes.draw do
   match '/xui' => 'react#index', :via => [:get]
   match '/xui/*page' => 'react#index', :via => [:get]
   match '/organization_select' => 'react#index', :via => [:get]
+
+  match '/bastion_test' => 'bastion#index', :via => [:get]
+  match '/content_credentials' => 'bastion#index', :via => [:get]
 end

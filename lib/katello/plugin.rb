@@ -362,26 +362,24 @@ Foreman::Plugin.register :katello do
   images = find_katello_assets(:type => 'images')
   vendor_images = find_katello_assets(:type => 'images', :vendor => true)
 
-  bastion_locale_files = Dir.glob("#{Katello::Engine.root}/engines/bastion/vendor/assets/javascripts/#{Bastion.localization_path("*")}")
-  bastion_locale_files.map do |file|
-    file.gsub!("#{Katello::Engine.root}/engines/bastion/vendor/assets/javascripts/", "")
-  end
+  # TODO BASTION MOVING - Fix localization
+  #bastion_locale_files = Dir.glob("#{Katello::Engine.root}/engines/bastion/vendor/assets/javascripts/#{Bastion.localization_path("*")}")
+  #bastion_locale_files.map do |file|
+  #  file.gsub!("#{Katello::Engine.root}/engines/bastion/vendor/assets/javascripts/", "")
+  #end
 
   precompile = [
     'katello/katello.css',
     'katello/containers/container.css',
     'bastion/bastion.css',
-    'bastion/bastion.js',
     /bastion\S+.(?:svg|eot|woff|ttf)$/,
-    'bastion_katello/bastion_katello.css',
-    'bastion_katello/bastion_katello.js',
     /bastion_katello\S+.(?:svg|eot|woff|ttf)$/
   ]
 
   precompile.concat(javascripts)
   precompile.concat(images)
   precompile.concat(vendor_images)
-  precompile.concat(bastion_locale_files)
+  #precompile.concat(bastion_locale_files)
 
   precompile_assets(precompile)
 end
