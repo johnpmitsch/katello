@@ -18,7 +18,7 @@
       angular.module('Bastion').value('contentDisconnected', angular.fromJson('<%= Setting[:content_disconnected] %>'));
       angular.module('Bastion').value('entriesPerPage', "<%= Setting[:entries_per_page] %>");
       angular.module('Bastion').value('contentViewSolveDependencies', "<%= Setting[:content_view_solve_dependencies] %>");
-      angular.module('Bastion').constant('BastionConfig', angular.fromJson('<%= @bastion_config.to_json.html_safe %>'));
+      angular.module('Bastion').constant('BastionConfig', angular.fromJson('<%= bastion_config.to_json.html_safe %>'));
   //   angular.module('Bastion.auth').value('CurrentUser', {
   //       id: <%= User.current.id %>,
   //       admin: <%= User.current.admin || User.current.usergroups.any? { |group| group.admin } %>

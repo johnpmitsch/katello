@@ -10,7 +10,7 @@ module Katello
 
       db_migrated = !Foreman.in_setup_db_rake? && ActiveRecord::Base.connection.table_exists?(Setting.table_name)
 
-      @bastion_config ||= {
+      {
         'consumerCertRPM' => consumer_cert_rpm,
         'defaultDownloadPolicy' => !Foreman.in_rake? && db_migrated && Setting['default_download_policy'],
         'remoteExecutionPresent' => ::Katello.with_remote_execution?,
@@ -20,7 +20,7 @@ module Katello
     end
 
     def index
-      render 'katello/layouts/bastion', :layout => false
+      render 'katello/layouts/bastion', :layout => false, :locals => { bastion_config: bastion_config }
     end
   end
 end

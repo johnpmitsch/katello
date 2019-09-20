@@ -1,27 +1,28 @@
-//= require "bastion/angular-patternfly/angular-patternfly.js"
-//= require "angular-rails-templates"
+//require "\.angular-patternfly/angular-patternfly.js"
+function requireAll(r) { r.keys().forEach(r); }
 
-//= require "bastion/bastion.module"
-//= require "bastion/routing.module.js"
+require('angular-ui-router');
+require("./bastion.module")
+require("./routing.module")
 
-//= require "bastion/i18n/i18n.module"
-//= require "bastion/i18n/translate.service.js"
-//= require "bastion/i18n/translations"
+require("./i18n/i18n.module")
+require("./i18n/translate.service")
+require("./i18n/translations")
 
-//= require "bastion/auth/auth.module"
-//= require_tree "./auth"
+require("./auth/auth.module")
+requireAll(require.context('./auth/', true, /\.js$/));
 
-//= require "bastion/menu/menu.module"
-//= require_tree "./menu"
+require("./menu/menu.module")
+requireAll(require.context('./menu/', true, /\.js$/));
 
-//= require "bastion/components/components.module"
-//= require "bastion/components/formatters/components-formatters.module"
-//= require_tree "./components"
+require("./components/components.module")
+require("./components/formatters/components-formatters.module")
+requireAll(require.context('./components/', true, /\.js$/));
 
-//= require "bastion/utils/utils.module"
-//= require_tree "./utils"
+require("./utils/utils.module")
+requireAll(require.context('./utils/', true, /\.js$/));
 
-//= require "bastion/features/features.module"
-//= require_tree "./features"
+require("./features/features.module")
+requireAll(require.context('./features/', true, /\.js$/));
 
-//= require "bastion/bastion-bootstrap"
+require("./bastion-bootstrap")
