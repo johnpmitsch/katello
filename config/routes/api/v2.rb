@@ -16,6 +16,8 @@ Katello::Engine.routes.draw do
 
         root :to => 'root#resource_list'
 
+        api_resources :fruits
+
         api_resources :capsules, :only => [:index, :show] do
           member do
             resource :content, :only => [], :controller => 'capsule_content' do

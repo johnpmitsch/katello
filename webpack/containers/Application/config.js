@@ -9,6 +9,7 @@ import ModuleStreams from '../../scenes/ModuleStreams';
 import ModuleStreamDetails from '../../scenes/ModuleStreams/Details';
 import AnsibleCollections from '../../scenes/AnsibleCollections';
 import AnsibleCollectionDetails from '../../scenes/AnsibleCollections/Details';
+import Fruits from '../../scenes/Fruits';
 import withHeader from './withHeaders';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -49,5 +50,9 @@ export const links = [
   {
     path: 'ansible_collections/:id([0-9]+)',
     component: withHeader(AnsibleCollectionDetails, { title: __('Ansible Collection Details') }),
+  },
+  {
+    path: 'fruits',
+    component: withHeader(Fruits, { title: __('Fav Fruits') }),
   },
 ];
