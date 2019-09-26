@@ -15,15 +15,15 @@ git remote add jomitsch https://github.com/johnpmitsch/katello.git
 git fetch jomitsch
 git checkout jomitsch/katello_challenge
 ```
-2. `bundle exec rake db:migrate` to migrate the database
+2. `cd ../foreman && bundle exec rake db:migrate` to migrate the database
 3. `bundle exec rake katello:seed_fruits` to seed them fruits
 4. Start a server
 5. Ensure you can call the fruits API endpoint and fruits are returned `curl -u admin:changeme -H "Content-Type: application/json" localhost:3000/katello/api/v2/fruits`
-
+6. The backend and the routing has already been set up for `$FOREMAN_URL/fruits`.
 
 ## Task
 
-In `webpack/scenes/Fruits` You will see the file structure to add the Fruits page. The backend and the routing has already been setup. Fill in these files with the appropiate React and Redux code to call the fruits API and display a list of fruit with a name and color columns. Be sure to use the [Table](https://github.com/Katello/katello/tree/master/webpack/move_to_foreman/components/common/table) that Katello provides.
+In `~/katello/webpack/scenes/Fruits` you will see the file structure to add the Fruits page. Fill in these files with the appropriate React and Redux code to call the fruits API and display a list of fruit with a name and color columns. Be sure to use the [Table](https://github.com/Katello/katello/tree/master/webpack/move_to_foreman/components/common/table) that Katello provides.
 
 ## Tips
 
