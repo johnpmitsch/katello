@@ -23,7 +23,7 @@ git checkout jomitsch/katello_challenge
 
 ## Task
 
-In `~/katello/webpack/scenes/Fruits` you will see the file structure to add the Fruits page. Fill in these files with the appropriate React and Redux code to call the fruits API and display a list of fruit with a name and color columns. Be sure to use the [Table](https://github.com/Katello/katello/tree/master/webpack/move_to_foreman/components/common/table) that Katello provides.
+In `~/katello/webpack/scenes/Fruits` you will see the file structure to add the Fruits page. A basic Table is included, but doesn't have any REAL fruit info!  Fill in these files with the appropriate React and Redux code to call the fruits API and display a list of fruit with _name_ and _color_ columns.  (If you want, add more columns to the table using existing data!)
 
 ## Tips
 
