@@ -13,4 +13,4 @@ class FruitPage extends Component {
   }
 }
 
-export default FruitPage
+export default FruitPage;
