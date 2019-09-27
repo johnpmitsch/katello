@@ -23,10 +23,20 @@ git checkout jomitsch/katello_challenge
 
 ## Task
 
-In `~/katello/webpack/scenes/Fruits` you will see the file structure to add the Fruits page. A basic Table is included, but doesn't have any REAL fruit info!  Fill in these files with the appropriate React and Redux code to call the fruits API and display a list of fruit with _name_ and _color_ columns.  (If you want, add more columns to the table using existing data!)
+- In `~/katello/webpack/scenes/Fruits` you will see the file structure to add the Fruits page. A basic Table is included, but doesn't have any REAL fruit info!  Fill in these files with the appropriate React and Redux code to call the fruits API and display a list of fruit with _name_ and _color_ columns. Some boilerplate code and dummy data has been filled in for you, so be sure to read through the files and the comments to see what is there!
 
-## Tips
+- If you finish early (congratulations smarty-pants!), here are some stretch goals:
+  - Can you use react-bootstrap style components to give the page a better layout?
+  - Try to implement a details page for each fruit and display the id, created at, and updated at values
+  - Add more columns to the table to show the same additional details (same idea as the details page, but on the index page, you can repeat the data for practice)
+  - Implement search functionality
+  - Get creative! Can you implement a spinner? A modal pop-up?
 
-- It may help to start with mocked data to set up the React side of things first before setting up Redux
-- Use examples of other pages in Katello!
-- If you finish early (congratulations smarty-pants!), try to implement a details page
+
+Tip: Use examples of other pages in Katello!
+
+## Solutions
+
+There are two branches with solutions that you can use if you get stuck or want to check your work:
+- [solution using "classic" React](https://github.com/jeremylenz/katello/tree/fruit-challenge-solution)
+- [solution using React hooks](https://github.com/jeremylenz/katello/tree/fruit-challenge-solution-hooks)

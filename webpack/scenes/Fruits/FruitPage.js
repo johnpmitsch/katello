@@ -1,25 +1,34 @@
 // Edit this page to show the fruits table
 import React, { Component } from 'react';
 import { Table as ForemanTable } from 'foremanReact/components/common/table';
-import { rows, columns } from './FruitTableSchema';
+import { columns } from './FruitTableSchema';
+
+// This is dummy data; you will need to replace it with real data from your API call.
+const results = [
+  {
+    name: 'idk',
+    color: 'what color is fruit',
+  },
+  {
+    name: 'put more fruit data here',
+    color: 'okay!',
+  },
+];
 
 class FruitPage extends Component {
   // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
-    // Bonus: After completing your table,
-    // try adding local state here that can be changed when the user clicks a table cell!
-    // Or maybe a loading spinner or something.
   }
 
   componentDidMount() {
-    // Fetch data here
+    // Fetch data here. This will be done with a redux action
   }
 
   render() {
     return (
       <ForemanTable
-        rows={rows}
+        rows={results}
         columns={columns}
       />
     );
