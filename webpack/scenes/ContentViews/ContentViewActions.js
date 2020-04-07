@@ -26,16 +26,11 @@ export const loadContentViews = (extendedParams = {}) => async (dispatch) => {
 
   try {
     const { data } = await api.get('/content_views', {}, params);
-    const result = dispatch({
+    return dispatch({
       type: CONTENT_VIEWS_SUCCESS,
       response: data,
       search: extendedParams.search,
     });
-    const poolIds = filterRHContentViews(data.results).map(subs => subs.id);
-    if (poolIds.length > 0) {
-      dispatch(loadAvailableQuantities({ poolIds }));
-    }
-    return result;
   } catch (error) {
     return dispatch(apiError(CONTENT_VIEWS_FAILURE, error));
   }

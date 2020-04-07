@@ -18,6 +18,13 @@ export default (state = initialState, action) => {
       return state.set('loading', true);
 
     case CONTENT_VIEWS_SUCCESS: {
+      const {
+        page,
+        per_page, // eslint-disable-line camelcase
+        subtotal,
+        results,
+      } = action.response;
+
       return state.merge({
         index: action.response,
       });
