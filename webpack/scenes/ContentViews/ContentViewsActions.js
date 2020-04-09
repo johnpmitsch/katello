@@ -1,14 +1,11 @@
 import { propsToSnakeCase } from 'foremanReact/common/helpers';
 
-import { isEmpty } from 'lodash';
 import api, { orgId } from '../../services/api';
-
 import {
   CONTENT_VIEWS_REQUEST,
   CONTENT_VIEWS_SUCCESS,
   CONTENT_VIEWS_FAILURE,
-} from './ContentViewConstants';
-
+} from './ContentViewsConstants';
 import { apiError } from '../../move_to_foreman/common/helpers.js';
 
 export const createContentViewsParams = (extendedParams = {}) => ({

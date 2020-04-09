@@ -9,23 +9,23 @@ import PropTypes from 'prop-types';
 import Loading from './Loading';
 import tableDataGenerator, { buildColumns } from './tableDataGenerator';
 import emptyRows from './emptyRows';
-import './ContentViewTable.scss';
+import './ContentViewsTable.scss';
 
 const contentViewShowFakeData = require('../data/show');
 
-const ContentViewTable = ({ contentViews }) => {
+const ContentViewTable = ({ results, loading }) => {
   const [detailsMap, setDetailsMap] = useState({}); // Map of CV id to details object
   const [table, setTable] = useState({ rows: [], columns: [] });
   // Map of CV id to expanded cell, if id not present, row is not expanded
   const [expandedColumnMap, setExpandedColumnMap] = useState({});
-  const cvsPresent = contentViews && contentViews.results && contentViews.results.length > 0;
+  const cvsPresent = results && results.length > 0;
 
   useEffect(
     () => {
-      if (!contentViews) return;
+      if (!results) return;
       if (cvsPresent) {
         const tableData = tableDataGenerator(
-          contentViews,
+          results,
           detailsMap,
           expandedColumnMap,
         );
@@ -34,7 +34,7 @@ const ContentViewTable = ({ contentViews }) => {
         setTable({ columns: buildColumns(), rows: emptyRows });
       }
     },
-    [contentViews, detailsMap, expandedColumnMap],
+    [results, detailsMap, expandedColumnMap],
   );
 
   const cvIdFromRow = ({ details: { props: rowProps } }) => rowProps.contentviewid;
@@ -110,7 +110,9 @@ const ContentViewTable = ({ contentViews }) => {
   };
 
   const { rows, columns } = table;
-  return contentViews ?
+  console.log({ loading, cvsPresent, results, rowLength: rows.length });
+  return loading ?
+    (<Loading />) :
     (
       <Table
         aria-label="Content View Table"
@@ -124,7 +126,7 @@ const ContentViewTable = ({ contentViews }) => {
         <TableHeader />
         <TableBody />
       </Table>
-    ) : (<Loading />);
+    );
 };
 
 ContentViewTable.propTypes = {

@@ -6,7 +6,7 @@ import {
   CONTENT_VIEWS_REQUEST,
   CONTENT_VIEWS_SUCCESS,
   CONTENT_VIEWS_FAILURE,
-} from './ContentViewConstants';
+} from './ContentViewsConstants';
 
 const initialState = Immutable({
   ...initialApiState,
@@ -26,9 +26,16 @@ export default (state = initialState, action) => {
       } = action.response;
 
       return state.merge({
-        index: action.response,
+        results,
+        loading: false,
+        pagination: {
+          page: Number(page),
+          // eslint-disable-next-line camelcase
+          perPage: Number(per_page || state.pagination.perPage),
+        },
+        itemCount: Number(subtotal),
       });
-    };
+    }
 
     case CONTENT_VIEWS_FAILURE:
       return state
@@ -37,5 +44,5 @@ export default (state = initialState, action) => {
 
     default:
       return state;
-  };
+  }
 };

@@ -113,9 +113,9 @@ const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
   return detailDropdowns;
 };
 
-const tableDataGenerator = (contentViewData, detailsMap, expandedColumnMap) => {
+const tableDataGenerator = (results, detailsMap, expandedColumnMap) => {
   const data = {};
-  const contentViews = contentViewData.results || [];
+  const contentViews = results || [];
   data.columns = buildColumns();
   data.rows = [];
 

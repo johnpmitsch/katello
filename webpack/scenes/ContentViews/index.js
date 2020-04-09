@@ -2,16 +2,17 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import ContentViewPage from './ContentViewPage';
-import * as ContentViewActions from './ContentViewActions';
-import reducer from './ContentViewReducer';
+import ContentViewsPage from './ContentViewsPage';
+import * as ContentViewsActions from './ContentViewsActions';
+import reducer from './ContentViewsReducer';
 
-const mapStateToProps = (state) => ({
-  contentViews: state.katello.contentViews.index ,
-});
+const mapStateToProps = (state) => {
+  const cvState = state.katello.contentViews;
+  return { ...cvState };
+};
 
-const mapDispatchToProps = dispatch => bindActionCreators(ContentViewActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(ContentViewsActions, dispatch);
 
 export const contentViews = reducer;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentViewPage));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentViewsPage));
