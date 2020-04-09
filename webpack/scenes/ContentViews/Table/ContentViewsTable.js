@@ -20,8 +20,7 @@ const ContentViewTable = ({ results, loading }) => {
   const [expandedColumnMap, setExpandedColumnMap] = useState({});
   const cvsPresent = results && results.length > 0;
 
-  useEffect(
-    () => {
+  useEffect(() => {
       if (!results) return;
       if (cvsPresent) {
         const tableData = tableDataGenerator(
@@ -110,10 +109,8 @@ const ContentViewTable = ({ results, loading }) => {
   };
 
   const { rows, columns } = table;
-  console.log({ loading, cvsPresent, results, rowLength: rows.length });
-  return loading ?
-    (<Loading />) :
-    (
+  if (loading) return (<Loading />)
+  return (
       <Table
         aria-label="Content View Table"
         onSelect={cvsPresent ? onSelect : null}

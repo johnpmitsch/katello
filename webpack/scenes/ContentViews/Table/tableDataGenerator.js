@@ -1,6 +1,7 @@
 import React from 'react';
 import { compoundExpand } from '@patternfly/react-table';
 import { ScreenIcon, FolderOpenIcon, ContainerNodeIcon } from '@patternfly/react-icons';
+import IconWithCount from '../components/IconWithCount';
 
 import DetailsExpansion from '../expansions/DetailsExpansion';
 import RepositoriesExpansion from '../expansions/RepositoriesExpansion';
@@ -9,10 +10,10 @@ import VersionsExpansion from '../expansions/VersionsExpansion';
 import ContentViewName from '../components/ContentViewName';
 
 export const buildColumns = () => [
-  'Name', 'Last Published', 'Details',
-  { title: 'Environments', cellTransforms: [compoundExpand] },
-  { title: 'Repositories', cellTransforms: [compoundExpand] },
-  { title: 'Versions', cellTransforms: [compoundExpand] },
+  __('Name'), __('Last Published'), __('Details'),
+  { title: __('Environments'), cellTransforms: [compoundExpand] },
+  { title: __('Repositories'), cellTransforms: [compoundExpand] },
+  { title: __('Versions'), cellTransforms: [compoundExpand] },
 ];
 
 const buildRow = (contentView, openColumn) => {
@@ -22,35 +23,17 @@ const buildRow = (contentView, openColumn) => {
   const row = [
     { title: <ContentViewName composite={composite ? 1 : undefined} name={name} cvId={id} /> },
     lastPublished,
-    { title: 'Details', props: { isOpen: false, ariaControls: `cv-details-expansion-${id}`, contentviewid: id } },
+    { title: __('Details'), props: { isOpen: false, ariaControls: `cv-details-expansion-${id}`, contentviewid: id } },
     {
-      title:
-            (
-              <React.Fragment>
-                <ScreenIcon key={id} title={`environments-icon-${id}`} className="ktable-cell-icon" />
-                {environments.length}
-              </React.Fragment>
-            ),
+      title: <IconWithCount Icon={ScreenIcon} count={environments.length} title={`environments-icon-${id}`} />,
       props: { isOpen: false, ariaControls: `cv-environments-expansion-${id}` },
     },
     {
-      title:
-            (
-              <React.Fragment>
-                <FolderOpenIcon key={id} title={`repositories-icon-${id}`} className="ktable-cell-icon" />
-                {repositories.length}
-              </React.Fragment>
-            ),
+      title: <IconWithCount Icon={FolderOpenIcon} count={repositories.length} title={`repositories-icon-${id}`} />,
       props: { isOpen: false, ariaControls: `cv-repositories-expansion-${id}` },
     },
     {
-      title:
-            (
-              <React.Fragment>
-                <ContainerNodeIcon key={id} title={`versions-icon-${id}`} className="ktable-cell-icon" />
-                {versions.length}
-              </React.Fragment>
-            ),
+      title: <IconWithCount Icon={ContainerNodeIcon} count={versions.length} title={`versions-icon-${id}`} />,
       props: { isOpen: false, ariaControls: `cv-versions-expansion-${id}` },
     },
   ];

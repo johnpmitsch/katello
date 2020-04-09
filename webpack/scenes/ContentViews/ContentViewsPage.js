@@ -10,7 +10,7 @@ const ContentViewsPage = ({ loadContentViews, ...tableProps }) => {
 
   return (
     <React.Fragment>
-      <h1>Content Views</h1>
+      <h1>{__("Content Views")}</h1>
       <ContentViewsTable {...tableProps} />
     </React.Fragment>
   );

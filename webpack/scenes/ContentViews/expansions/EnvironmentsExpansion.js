@@ -5,7 +5,7 @@ const EnvironmentsExpansion = ({ cvId }) => {
   const identifier = `cv-environments-expansion-${cvId}`;
   return (
     <React.Fragment>
-      <div id={identifier} data-testid={identifier}>Environments</div>
+      <div id={identifier} data-testid={identifier}>{__("Environments")}</div>
       <div>this should be showing but will be replaced by something else later</div>
     </React.Fragment>
   );
