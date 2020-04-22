@@ -11,7 +11,7 @@ import VersionsExpansion from '../expansions/VersionsExpansion';
 import ContentViewName from '../components/ContentViewName';
 
 export const buildColumns = () => [
-  __('Name'), __('Last Published'), __('Details'),
+  __('Name'), __('Last published'), __('Details'),
   { title: __('Environments'), cellTransforms: [compoundExpand] },
   { title: __('Repositories'), cellTransforms: [compoundExpand] },
   { title: __('Versions'), cellTransforms: [compoundExpand] },
