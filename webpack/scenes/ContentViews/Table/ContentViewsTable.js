@@ -110,6 +110,7 @@ const ContentViewTable = ({
     <Table
       aria-label="Content View Table"
       onSelect={cvsPresent ? onSelect : null}
+      canSelectAll={false}
       onExpand={onExpand}
       className="katello-pf4-table"
       actionResolver={actionResolver}
