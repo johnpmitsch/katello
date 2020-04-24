@@ -1,39 +1,26 @@
-import { propsToSnakeCase } from 'foremanReact/common/helpers';
-
 import api, { orgId } from '../../services/api';
 import {
-  CONTENT_VIEWS_REQUEST,
-  CONTENT_VIEWS_SUCCESS,
-  CONTENT_VIEWS_FAILURE,
   CONTENT_VIEW_DETAILS_REQUEST,
   CONTENT_VIEW_DETAILS_SUCCESS,
   CONTENT_VIEW_DETAILS_FAILURE,
+  CONTENT_VIEWS_KEY,
 } from './ContentViewsConstants';
 import { apiError } from '../../move_to_foreman/common/helpers.js';
+import { API_OPERATIONS } from 'foremanReact/redux/API';
+import { get } from 'foremanReact/redux/API';
 
-const createContentViewsParams = (extendedParams = {}) => ({
-  ...{
-    organization_id: orgId(),
-    nondefault: true,
-  },
-  ...propsToSnakeCase(extendedParams),
+const createContentViewsParams = () => ({
+  organization_id: orgId(),
+  nondefault: true,
 });
 
-export const loadContentViews = (extendedParams = {}) => async (dispatch) => {
-  dispatch({ type: CONTENT_VIEWS_REQUEST });
-
-  const params = createContentViewsParams(extendedParams);
-
-  try {
-    const { data } = await api.get('/content_views', {}, params);
-    return dispatch({
-      type: CONTENT_VIEWS_SUCCESS,
-      response: data,
-      search: extendedParams.search,
-    });
-  } catch (error) {
-    return dispatch(apiError(CONTENT_VIEWS_FAILURE, error));
-  }
+export const getData = url => {
+  return get({
+    type: API_OPERATIONS.GET,
+    key: CONTENT_VIEWS_KEY,
+    url,
+    payload: createContentViewsParams(),
+  })
 };
 
 export const loadContentViewDetails = contentViewId => async (dispatch) => {

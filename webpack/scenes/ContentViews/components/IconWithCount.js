@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './IconWithCount.scss';
 
 const IconWithCount = ({ count, title, Icon }) => (
   <React.Fragment>
