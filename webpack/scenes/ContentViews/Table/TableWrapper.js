@@ -10,9 +10,10 @@ import { STATUS } from 'foremanReact/constants';
 
 const TableWrapper = ({ status, cells, rows, error, EmptyBody, EmptyTitle, ...extraTableProps}) => {
   console.log(status);
-  if (status === STATUS.pending) return (<Loading />);
+  if (status === STATUS.PENDING) return (<Loading />);
   if (status === STATUS.RESOVLED && rows.length === 0) return (<EmptyStateMessage title={EmptyTitle} body={EmptyBody} />);
   // handle error state
+  // API data not overwriting when switching orgs?
 
   const tableProps = { cells, rows, ...extraTableProps}
   return (
