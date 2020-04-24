@@ -1,44 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-} from '@patternfly/react-table';
 import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
+import { STATUS } from 'foremanReact/constants';
 
-import Loading from './Loading';
-import EmptyStateMessage from '../components/EmptyStateMessage';
+import TableWrapper from './TableWrapper';
 import tableDataGenerator from './tableDataGenerator';
-import './ContentViewsTable.scss';
+import actionResolver from './actionResolver';
 
 const ContentViewTable = ({
-  loadContentViewDetails, detailsMap, results, loading,
+  items, status, error,
 }) => {
   const [table, setTable] = useState({ rows: [], columns: [] });
-  // Map of CV id to expanded cell, if id not present, row is not expanded
-  const [expandedColumnMap, setExpandedColumnMap] = useState({});
-  const cvsPresent = results && results.length > 0;
+  const [rowMapping, setRowMapping] = useState({});
+  const loading = status === STATUS.PENDING;
 
   useEffect(
     () => {
-      if (!loading && cvsPresent) {
-        const tableData = tableDataGenerator(
-          results,
-          detailsMap,
-          expandedColumnMap,
+      if (!loading && items && items.length > 0) {
+        const { updatedRowMapping, ...tableData } = tableDataGenerator(
+          items,
+          rowMapping,
         );
         setTable(tableData);
+        setRowMapping(updatedRowMapping);
       }
     },
-    [results, detailsMap, expandedColumnMap],
+    [items, JSON.stringify(rowMapping)], // use JSON to check obj values eq not reference eq
   );
 
-  const cvIdFromRow = ({ details: { props: rowProps } }) => rowProps.contentviewid;
-
-  const loadDetails = (id) => {
-    if (detailsMap[id]) return;
-    loadContentViewDetails(id);
+  const cvIdFromRow = (rowIdx) => {
+    let id;
+    Object.entries(rowMapping).forEach(([cvId, { rowIndex }]) => {
+      if (rowIndex === rowIdx) id = cvId;
+    });
+    return id;
   };
 
   const onSelect = (event, isSelected, rowId) => {
@@ -53,81 +48,56 @@ const ContentViewTable = ({
     setTable(prevTable => ({ ...prevTable, rows }));
   };
 
-  const onExpand = (_event, _rowIndex, colIndex, isOpen, rowData) => {
+  const onExpand = (_event, rowIndex, colIndex, isOpen) => {
     const { rows } = table;
-    const contentViewId = cvIdFromRow(rowData);
+    const contentViewId = cvIdFromRow(rowIndex);
     // adjust for the selection checkbox cell being counted in the index
     const adjustedColIndex = colIndex - 1;
 
     if (!isOpen) {
-      setExpandedColumnMap(prev => ({ ...prev, [contentViewId]: adjustedColIndex }));
+      setRowMapping((prev) => {
+        const updatedMap = { ...prev[contentViewId], expandedColumn: adjustedColIndex };
+        return { ...prev, [contentViewId]: updatedMap };
+      });
     } else {
       // remove the row completely by assigning it to a throwaway variable
       // eslint-disable-next-line camelcase, no-unused-vars
-      const { [contentViewId]: _throwaway, ...newMap } = expandedColumnMap;
-      setExpandedColumnMap(newMap);
+      const { [contentViewId]: _throwaway, ...newMap } = rowMapping;
+      setRowMapping(newMap);
     }
-    loadDetails(contentViewId);
 
     setTable(prevTable => ({ ...prevTable, rows }));
-  };
-
-  const actionResolver = (rowData, { _rowIndex }) => {
-    // don't show actions for the expanded parts
-    if (rowData.parent || rowData.compoundParent || rowData.noactions) return null;
-
-    // printing to the console for now until these are hooked up
-    /* eslint-disable no-console */
-    return [
-      {
-        title: 'Publish and Promote',
-        onClick: (_event, rowId, rowInfo) => console.log(`clicked on row ${rowId} with Content View ${cvIdFromRow(rowInfo)}`),
-      },
-      {
-        title: 'Promote',
-        onClick: (_event, rowId, rowInfo) => console.log(`clicked on row ${rowId} with Content View ${cvIdFromRow(rowInfo)}`),
-      },
-      {
-        title: 'Copy',
-        onClick: (_event, rowId, rowInfo) => console.log(`clicked on row ${rowId} with Content View ${cvIdFromRow(rowInfo)}`),
-      },
-      {
-        title: 'Delete',
-        onClick: (_event, rowId, rowInfo) => console.log(`clicked on row ${rowId} with Content View ${cvIdFromRow(rowInfo)}`),
-      },
-    ];
-    /* eslint-enable no-console */
   };
 
   const EmptyTitle = __("You currently don't have any Content Views.");
   const EmptyBody = __('A Content View can be added by using the "New content view" button below.');
 
-  if (loading) return (<Loading />);
-  if (!cvsPresent) return (<EmptyStateMessage title={EmptyTitle} body={EmptyBody} />);
-
   const { rows, columns } = table;
   return (
-    <Table
-      aria-label="Content View Table"
-      onSelect={cvsPresent ? onSelect : null}
+    <TableWrapper
+      rows={rows}
+      cells={columns}
+      status={status}
+      emptyTitle={EmptyTitle}
+      emptyBody={EmptyBody}
+      onSelect={onSelect}
       canSelectAll={false}
       onExpand={onExpand}
-      className="katello-pf4-table"
       actionResolver={actionResolver}
-      cells={columns}
-      rows={rows}
-    >
-      <TableHeader />
-      <TableBody />
-    </Table>
+      error={error}
+    />
   );
 };
 
 ContentViewTable.propTypes = {
-  loadContentViewDetails: PropTypes.func.isRequired,
-  results: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  loading: PropTypes.bool.isRequired,
-  detailsMap: PropTypes.shape({}).isRequired,
+  items: PropTypes.arrayOf(PropTypes.shape({})),
+  status: PropTypes.string.isRequired,
+  error: PropTypes.string,
+};
+
+ContentViewTable.defaultProps = {
+  error: null,
+  items: [],
 };
 
 export default ContentViewTable;

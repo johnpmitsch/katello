@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import { organization } from '../../containers/Application';
 import redHatRepositories from './RedHatRepositories';
-import { contentViews } from '../../scenes/ContentViews';
 import { subscriptions } from '../../scenes/Subscriptions';
 import { upstreamSubscriptions } from '../../scenes/Subscriptions/UpstreamSubscriptions';
 import { manifestHistory } from '../../scenes/Subscriptions/Manifest';
@@ -17,7 +16,6 @@ import { ansibleCollectionDetails } from '../../scenes/AnsibleCollections/Detail
 
 export default combineReducers({
   organization,
-  contentViews,
   redHatRepositories,
   subscriptions,
   upstreamSubscriptions,

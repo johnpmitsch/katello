@@ -27,7 +27,7 @@ ContentViewName.propTypes = {
 };
 
 ContentViewName.defaultProps = {
-  composite: undefined,
+  composite: false,
 };
 
 export default ContentViewName;

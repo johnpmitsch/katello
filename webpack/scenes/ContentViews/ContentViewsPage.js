@@ -1,38 +1,31 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
+import { useSelector, useDispatch } from 'react-redux';
+import getContentViews from './ContentViewsActions';
+import { selectContentViews,
+  selectContentViewStatus,
+  selectContentViewError } from './ContentViewSelectors';
 
 import ContentViewsTable from './Table/ContentViewsTable';
 
-const ContentViewsPage = ({ loadContentViews, loadContentViewDetails, ...tableProps }) => {
+const ContentViewsPage = () => {
+  const items = useSelector(selectContentViews);
+  const status = useSelector(selectContentViewStatus);
+  const error = useSelector(selectContentViewError);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    loadContentViews();
+    console.log(getContentViews());
+    dispatch(getContentViews());
   }, []);
 
   return (
     <React.Fragment>
       <h1>{__('Content Views')}</h1>
-      <ContentViewsTable loadContentViewDetails={loadContentViewDetails} {...tableProps} />
+      <ContentViewsTable {...{ items, status, error }} />
     </React.Fragment>
   );
-};
-
-ContentViewsPage.propTypes = {
-  tableProps: PropTypes.shape({
-    results: PropTypes.arrayOf(PropTypes.shape({})),
-    loading: PropTypes.bool,
-    detailsMap: PropTypes.shape({}),
-  }),
-  loadContentViews: PropTypes.func.isRequired,
-  loadContentViewDetails: PropTypes.func.isRequired,
-};
-
-ContentViewsPage.defaultProps = {
-  tableProps: {
-    results: [],
-    loading: true,
-    detailsMap: {},
-  },
 };
 
 export default ContentViewsPage;

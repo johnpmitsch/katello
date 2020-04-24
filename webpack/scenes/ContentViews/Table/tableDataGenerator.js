@@ -9,6 +9,7 @@ import RepositoriesExpansion from '../expansions/RepositoriesExpansion';
 import EnvironmentsExpansion from '../expansions/EnvironmentsExpansion';
 import VersionsExpansion from '../expansions/VersionsExpansion';
 import ContentViewName from '../components/ContentViewName';
+import DetailsContainer from '../details/DetailsContainer';
 
 export const buildColumns = () => [
   __('Name'), __('Last published'), __('Details'),
@@ -24,7 +25,7 @@ const buildRow = (contentView, openColumn) => {
   const row = [
     { title: <ContentViewName composite={composite ? 1 : undefined} name={name} cvId={id} /> },
     lastPublished || 'Not yet published',
-    { title: __('Details'), props: { isOpen: false, ariaControls: `cv-details-expansion-${id}`, contentviewid: id } },
+    { title: __('Details'), props: { isOpen: false, ariaControls: `cv-details-expansion-${id}` } },
     {
       title: <IconWithCount Icon={ScreenIcon} count={environments.length} title={`environments-icon-${id}`} />,
       props: { isOpen: false, ariaControls: `cv-environments-expansion-${id}` },
@@ -43,18 +44,20 @@ const buildRow = (contentView, openColumn) => {
   return row;
 };
 
-const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
-  const {
-    loading, repositories, environments, versions, ...details
-  } = contentViewDetails;
-  const commonProps = { cvId: id, className: 'pf-m-no-padding' };
+const buildDetailDropdowns = (id, rowIndex, openColumn) => {
+  const cvId = { cvId: id };
+  const expansionProps = { ...cvId, className: 'pf-m-no-padding' };
+  const containerProps = column => ({ ...cvId, isOpen: openColumn === column });
 
   let detailDropdowns = [
     {
       compoundParent: 2,
       cells: [
         {
-          title: <DetailsExpansion details={details} {...commonProps} />,
+          title: (
+            <DetailsContainer {...containerProps(3)}>
+              <DetailsExpansion {...expansionProps} />
+            </DetailsContainer>),
           props: { colSpan: 6 },
         },
       ],
@@ -63,7 +66,10 @@ const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
       compoundParent: 3,
       cells: [
         {
-          title: <EnvironmentsExpansion environments={environments} {...commonProps} />,
+          title: (
+            <DetailsContainer {...containerProps(4)}>
+              <EnvironmentsExpansion {...expansionProps} />
+            </DetailsContainer>),
           props: { colSpan: 6 },
         },
       ],
@@ -72,7 +78,10 @@ const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
       compoundParent: 4,
       cells: [
         {
-          title: <RepositoriesExpansion repositories={repositories} {...commonProps} />,
+          title: (
+            <DetailsContainer {...containerProps(5)}>
+              <RepositoriesExpansion {...expansionProps} />
+            </DetailsContainer>),
           props: { colSpan: 6 },
         },
       ],
@@ -81,7 +90,10 @@ const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
       compoundParent: 5,
       cells: [
         {
-          title: <VersionsExpansion versions={versions} {...commonProps} />,
+          title: (
+            <DetailsContainer {...containerProps(6)}>
+              <VersionsExpansion {...expansionProps} />
+            </DetailsContainer>),
           props: { colSpan: 6 },
         },
       ],
@@ -95,22 +107,26 @@ const buildDetailDropdowns = (id, rowIndex, contentViewDetails) => {
   return detailDropdowns;
 };
 
-const tableDataGenerator = (results, detailsMap, expandedColumnMap) => {
+const tableDataGenerator = (results, rowMapping) => {
+  const updatedRowMapping = { ...rowMapping };
   const contentViews = results || [];
   const columns = buildColumns();
   const rows = [];
 
   contentViews.forEach((contentView, rowIndex) => {
     const { id } = contentView;
-    const openColumn = expandedColumnMap[id];
-    const contentViewDetails = detailsMap[id] || {};
+    if (!Object.prototype.hasOwnProperty.call(updatedRowMapping, id)) {
+      updatedRowMapping[id] = { expandedColumn: null, rowIndex: rows.length };
+    }
+    const openColumn = updatedRowMapping[id].expandedColumn;
     const cells = buildRow(contentView, openColumn);
+    const isOpen = !!openColumn;
 
-    rows.push({ isOpen: !!openColumn, cells });
-    rows.push(...buildDetailDropdowns(id, rowIndex, contentViewDetails));
+    rows.push({ isOpen, cells });
+    rows.push(...buildDetailDropdowns(id, rowIndex, openColumn));
   });
 
-  return { rows, columns };
+  return { updatedRowMapping, rows, columns };
 };
 
 export default tableDataGenerator;
