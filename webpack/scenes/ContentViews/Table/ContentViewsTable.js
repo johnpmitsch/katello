@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
 
@@ -82,6 +82,7 @@ const ContentViewTable = ({
       canSelectAll={false}
       onExpand={onExpand}
       actionResolver={actionResolver}
+      error={error}
     />
   );
 };

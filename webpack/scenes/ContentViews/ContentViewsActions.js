@@ -19,7 +19,7 @@ export const getData = url => {
     type: API_OPERATIONS.GET,
     key: CONTENT_VIEWS_KEY,
     url,
-    payload: createContentViewsParams(),
+    params: createContentViewsParams(),
   })
 };
 

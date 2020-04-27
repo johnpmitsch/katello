@@ -96,7 +96,8 @@
       "webpack/test-utils"
     ],
     "moduleNameMapper": {
-      "^.+\\.(css|scss)$": "identity-obj-proxy"
+      "^.+\\.(css|scss)$": "identity-obj-proxy",
+      "foremanReact(.*)$": "<rootDir>/webpack/foremanReact$1"
     }
   }
 }
