@@ -8,6 +8,7 @@ import {
   CONTENT_VIEW_DETAILS_FAILURE,
 } from './ContentViewsConstants';
 
+/*
 const initialState = Immutable({
   ...initialApiState,
   detailsMap: {},
@@ -44,3 +45,4 @@ export default (state = initialState, action) => {
       return state;
   }
 };
+*/

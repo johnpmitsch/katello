@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { selectItems, selectStatus, selectError } from './ContentViewSelectors';
+import { selectContentViews, selectContentViewStatus, selectContentViewError } from './ContentViewSelectors';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { useSelector, useDispatch } from 'react-redux';
-import { getData } from './ContentViewsActions';
+import { getContentViews } from './ContentViewsActions';
 
 import ContentViewsTable from './Table/ContentViewsTable';
 
-const path = '/katello/api/v2/content_views';
-
 const ContentViewsPage = () => {
-  const items = useSelector(selectItems);
-  const status = useSelector(selectStatus);
-  const error = useSelector(selectError);
+  const items = useSelector(selectContentViews);
+  const status = useSelector(selectContentViewStatus);
+  const error = useSelector(selectContentViewError);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getData(path));
-  }, [path]);
+    dispatch(getContentViews());
+  }, []);
 
   return (
     <React.Fragment>
