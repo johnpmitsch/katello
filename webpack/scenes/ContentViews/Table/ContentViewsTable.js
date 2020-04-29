@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react';
 //import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
 import TableWrapper from './TableWrapper';
 import tableDataGenerator from './tableDataGenerator';
 import actionResolver from './actionResolver';
-import { getContentViewDetails } from '../ContentViewsActions';
-import { selectContentViewDetails } from '../ContentViewSelectors';
-import { CONTENT_VIEWS_KEY } from '../ContentViewsConstants';
 
 const ContentViewTable = ({
   items, status, error
@@ -17,16 +13,13 @@ const ContentViewTable = ({
   const [table, setTable] = useState({ rows: [], columns: [] });
   // Map of CV id to expanded cell, if id not present, row is not expanded
   const [expandedColumnMap, setExpandedColumnMap] = useState({});
-  const [detailsMap, setDetailsMap] = useState({});
   const loading = status === STATUS.PENDING
-  const dispatch = useDispatch();
 
   useEffect(
     () => {
       if (!loading && items && items.length > 0) {
         const tableData = tableDataGenerator(
           items,
-          detailsMap,
           expandedColumnMap,
         );
         setTable(tableData);
@@ -35,27 +28,22 @@ const ContentViewTable = ({
     [items, expandedColumnMap],
   );
 
-  useEffect(
-    () => {
-      Object.entries(detailsMap).forEach(([id, loaded]) => {
-        if (!loaded) {
-          const key = `${CONTENT_VIEWS_KEY}_${id}`;
-          const details = useSelector(state => selectAPIResponse(state, key), shallowEqual);
-          setDetailsMap(prev => ({ ...prev, [id]: true }));
-          if (details && details.response) return;
-          dispatch(getContentViewDetails(id));
-        }
-      })
-
-    }
-  )
+//  useEffect(
+//    () => {
+//      Object.entries(detailsMap).forEach(([id, loaded]) => {
+//        if (!loaded) {
+//          const key = `${CONTENT_VIEWS_KEY}_${id}`;
+//          const details = useSelector(state => selectAPIResponse(state, key), shallowEqual);
+//          setDetailsMap(prev => ({ ...prev, [id]: true }));
+//          if (details && details.response) return;
+//          dispatch(getContentViewDetails(id));
+//        }
+//      })
+//
+//    }
+//  )
 
   const cvIdFromRow = ({ details: { props: rowProps } }) => rowProps.contentviewid;
-
-  const loadDetails = (id) => {
-    if (detailsMap[id]) return;
-    setDetailsMap(prev => ({ ...prev, [id]: false }));
-  };
 
   const onSelect = (event, isSelected, rowId) => {
     let rows;
@@ -83,7 +71,6 @@ const ContentViewTable = ({
       const { [contentViewId]: _throwaway, ...newMap } = expandedColumnMap;
       setExpandedColumnMap(newMap);
     }
-    loadDetails(contentViewId);
 
     setTable(prevTable => ({ ...prevTable, rows }));
   };
