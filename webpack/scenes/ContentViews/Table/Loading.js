@@ -7,7 +7,7 @@ import {
   Spinner,
 } from '@patternfly/react-core';
 
-const Loading = () => (
+const Loading = ({ size = 'lg' }) => (
   <Bullseye>
     <EmptyState>
       <EmptyStateIcon variant="container" component={Spinner} />

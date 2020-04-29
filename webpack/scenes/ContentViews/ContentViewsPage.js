@@ -24,6 +24,6 @@ const ContentViewsPage = () => {
       <ContentViewsTable {...{ items, status, error }} />
     </React.Fragment>
   );
-}
+};
 
 export default ContentViewsPage;
