@@ -18,3 +18,6 @@ window.locales = { en: { domain: 'app', locale_data: { app: { '': {} } } } };
 
 // see https://github.com/testing-library/dom-testing-library/releases/tag/v7.0.0
 window.MutationObserver = MutationObserver;
+
+// This will return undefined in test environments and is expected in some helper functions.
+window.URL_PREFIX = '';

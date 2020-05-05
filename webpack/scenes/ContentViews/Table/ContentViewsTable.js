@@ -92,7 +92,10 @@ const ContentViewTable = ({
 ContentViewTable.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({})),
   status: PropTypes.string.isRequired,
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([
+    PropTypes.shape({}),
+    PropTypes.string,
+  ]),
 };
 
 ContentViewTable.defaultProps = {

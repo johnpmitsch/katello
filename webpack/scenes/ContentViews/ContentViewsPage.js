@@ -16,7 +16,6 @@ const ContentViewsPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(getContentViews());
     dispatch(getContentViews());
   }, []);
 

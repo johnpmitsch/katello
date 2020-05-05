@@ -19,7 +19,7 @@ const EmptyStateMessage = ({ title, body, error }) => (
         {title}
       </Title>
       <EmptyStateBody>
-        {body }
+        {body}
       </EmptyStateBody>
     </EmptyState>
   </Bullseye>
@@ -28,7 +28,10 @@ const EmptyStateMessage = ({ title, body, error }) => (
 EmptyStateMessage.propTypes = {
   title: PropTypes.string,
   body: PropTypes.string,
-  error: PropTypes.shape({}),
+  error: PropTypes.oneOfType([
+    PropTypes.shape({}),
+    PropTypes.string,
+  ]),
 };
 
 EmptyStateMessage.defaultProps = {

@@ -25,7 +25,8 @@ function renderWithApiRedux(
   const combinedReducers = combineReducers({ ...apiReducer });
   // Namespacing the initial state as well
   const initialFullState = Immutable({ API: { [namespace]: initialState } });
-  const store = createStore(combinedReducers, initialFullState, applyMiddleware(thunk, APIMiddleware));
+  const middlewares = applyMiddleware(thunk, APIMiddleware);
+  const store = createStore(combinedReducers, initialFullState, middlewares);
   const connectedComponent = (
     <Provider store={store}>
       <MemoryRouter>{component}</MemoryRouter>

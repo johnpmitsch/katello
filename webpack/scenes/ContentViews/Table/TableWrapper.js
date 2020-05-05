@@ -40,7 +40,10 @@ TableWrapper.propTypes = {
     PropTypes.shape({}),
     PropTypes.string])).isRequired,
   rows: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([
+    PropTypes.shape({}),
+    PropTypes.string,
+  ]),
   emptyBody: PropTypes.string.isRequired,
   emptyTitle: PropTypes.string.isRequired,
 };
