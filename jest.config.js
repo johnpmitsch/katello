@@ -22,6 +22,8 @@ const notFound = 'Foreman directory cannot be found! These tests require Foreman
 `files in foreman/${foremanReactRelative}.`;
 
 const foremanReactFull = checkForForemanReact(possibleForemanLocations, foremanReactRelative);
+const foremanFull = foremanReactFull.replace(foremanReactRelative, '');
+console.log(foremanFull);
 if (!foremanReactFull) throw new Error(notFound);
 
 // Jest configuration
@@ -36,7 +38,6 @@ module.exports = {
   ],
   testURL: 'http://localhost/',
   setupFiles: [
-    'raf/polyfill',
     './webpack/test_setup.js',
   ],
   setupFilesAfterEnv: [
@@ -50,7 +51,8 @@ module.exports = {
     '<rootDir>/engines',
   ],
   moduleDirectories: [
-    'node_modules/@theforeman/vendor-core/node_modules',
+    `${foremanFull}node_modules`,
+    `${foremanFull}node_modules/@theforeman/vendor-core/node_modules`,
     'node_modules',
     'webpack/test-utils',
   ],
