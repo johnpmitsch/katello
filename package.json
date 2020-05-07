@@ -5,9 +5,9 @@
   "scripts": {
     "storybook": "cross-env NODE_ENV=storybook start-storybook -p 6007",
     "storybook:deploy": "cross-env NODE_ENV=storybook storybook-to-ghpages",
-    "test": "jest webpack",
-    "test:watch": "jest webpack --watchAll",
-    "test:current": "jest webpack --watch",
+    "test": "npx jest webpack",
+    "test:watch": "npx jest webpack --watchAll",
+    "test:current": "npx jest webpack --watch",
     "format": "prettier --single-quote --trailing-comma es5 --write 'webpack/**/*.js'",
     "build": "npm run format && npm run lint",
     "lint": "npx eslint webpack/",

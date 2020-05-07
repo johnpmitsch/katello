@@ -22,8 +22,9 @@ const notFound = 'Foreman directory cannot be found! These tests require Foreman
 `files in foreman/${foremanReactRelative}.`;
 
 const foremanReactFull = checkForForemanReact(possibleForemanLocations, foremanReactRelative);
+// Will clean this up, all this logic in the jest config should be it's own package to be shared
+// by plugins
 const foremanFull = foremanReactFull.replace(foremanReactRelative, '');
-console.log(foremanFull);
 if (!foremanReactFull) throw new Error(notFound);
 
 // Jest configuration
