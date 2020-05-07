@@ -1,0 +1,39 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: React tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: katello
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+    - name: Install bundler (needed to find Foreman plugins)
+      run: gem install bundler
+    - name: Checkout Foreman repo
+      uses: actions/checkout@v2
+      with:
+        repository: theforeman/foreman
+        path: foreman
+        ref: develop
+    - name: Install Foreman dependencies
+      run: cd $GITHUB_WORKSPACE/foreman && npm i
+    - name: Run Katello tests
+      run: cd $GITHUB_WORKSPACE/katello && npm test
