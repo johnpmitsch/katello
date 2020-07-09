@@ -23,7 +23,7 @@ const cvUpdateSuccess = (response, dispatch) => {
   dispatch(getContentViewDetails(id));
   return dispatch(addToast({
     type: 'success',
-    message: __(' Content View updated.'),
+    message: __(' Content view updated.'),
   }));
 };
 

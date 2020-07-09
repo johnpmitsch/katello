@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import { ContentViewIcon } from '../components/ContentViewIcon';
 import { translate as __ } from 'foremanReact/common/I18n';
 import PropTypes from 'prop-types';
 
@@ -17,8 +18,8 @@ const ContentViewDetails = ({ match }) => {
     label,
     description,
     composite,
-    force_puppet_environment: forcePuppetEnvironment,
     solve_dependencies: solveDependencies,
+    auto_publish: autoPublish,
   } = details;
   const info = {
     name: {
@@ -35,20 +36,19 @@ const ContentViewDetails = ({ match }) => {
       label: __('Description'),
       textArea: true,
     },
-    composite: {
-      value: composite,
-      label: __('Composite'),
+  };
+
+  if (composite) {
+    info.auto_publish = {
+      value: autoPublish,
+      label: __('Auto Publish'),
       boolean: true,
-      editable: false,
-    },
-    force_puppet_environment: {
-      value: forcePuppetEnvironment,
-      label: __('Force Puppet environment'),
-      boolean: true,
-      tooltip: __('With this option selected, a puppet environment will be created during publish ' +
-               'and promote even if no puppet modules have been added to the Content View'),
-    },
-    solve_dependencies: {
+      tooltip: __('Applicable only for composite views. Auto publish composite view when a new ' +
+                  'version of a component content view is created. Also note auto publish will ' +
+                  'only happen when the component is marked "latest".'),
+    }
+  } else {
+    info.solve_dependencies = {
       value: solveDependencies,
       label: __('Solve dependencies'),
       boolean: true,
@@ -57,13 +57,13 @@ const ContentViewDetails = ({ match }) => {
                '(publishes can take over three times as long) and filters will be ignored when ' +
                'adding packages to solve dependencies. Also, certain scenarios involving errata ' +
                'may still cause dependency errors.'),
-    },
-  };
+    }
+  }
 
   const tabs = [
     {
       title: __('Details'),
-      content: <ContentViewInfo {...{ info, cvId }} />,
+      content: <ContentViewInfo {...{ info, cvId, composite}} />,
     },
     {
       title: __('Versions'),

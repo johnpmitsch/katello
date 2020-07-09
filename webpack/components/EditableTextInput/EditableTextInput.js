@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { TextInput, TextArea, Text, TextVariants, Button, Split, SplitItem } from '@patternfly/react-core';
-import { TimesIcon, CheckIcon, EditIcon } from '@patternfly/react-icons';
+import { TimesIcon, CheckIcon, PencilAltIcon } from '@patternfly/react-icons';
 import PropTypes from 'prop-types';
 import Loading from '../Loading';
 import './editableTextInput.scss';
@@ -25,7 +25,7 @@ const EditableTextInput = ({
 
   const textInput = () => {
     const sharedProps = {
-      value: inputValue,
+      value: inputValue ? inputValue : "",
       onChange: v => setInputValue(v),
     };
 
@@ -71,7 +71,7 @@ const EditableTextInput = ({
               variant="plain"
               onClick={() => setEditing(true)}
             >
-              <EditIcon />
+              <PencilAltIcon />
             </Button>
           </SplitItem>}
         </Split>

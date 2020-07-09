@@ -1,5 +1,5 @@
 import React from 'react';
-import { compoundExpand } from '@patternfly/react-table';
+import { compoundExpand, fitContent } from '@patternfly/react-table';
 import {
   ScreenIcon,
   ContainerNodeIcon
@@ -12,11 +12,12 @@ import IconWithCount from '../components/IconWithCount';
 import DetailsExpansion from '../expansions/DetailsExpansion';
 import EnvironmentsExpansion from '../expansions/EnvironmentsExpansion';
 import VersionsExpansion from '../expansions/VersionsExpansion';
-import ContentViewName from '../components/ContentViewName';
+import ContentViewIcon from '../components/ContentViewIcon';
 import DetailsContainer from '../Details/DetailsContainer';
 
 export const buildColumns = () => [
-  __('Type'), __('Name'), __('Last published'), __('Details'),
+  { title: __('Type'), transforms: [fitContent] },
+  __('Name'), __('Last published'), __('Details'),
   { title: __('Environments'), cellTransforms: [compoundExpand] },
   { title: __('Versions'), cellTransforms: [compoundExpand] },
 ];
@@ -26,7 +27,7 @@ const buildRow = (contentView, openColumn) => {
     id, composite, name, environments, repositories, versions, last_published: lastPublished,
   } = contentView;
   const row = [
-    { title: <ContentViewName composite={composite ? true : undefined} cvId={id} /> },
+    { title: <ContentViewIcon composite={composite ? true : undefined} /> },
     { title: <Link to={urlBuilder('labs/content_views', '', id)}>{name}</Link> },
     lastPublished || 'Not yet published',
     { title: __('Details'), props: { isOpen: false, ariaControls: `cv-details-expansion-${id}` } },
