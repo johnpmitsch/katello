@@ -9,7 +9,7 @@ import CONTENT_VIEWS_KEY, {
 } from '../ContentViewsConstants';
 import api from '../../../services/api';
 
-import { apiError } from '../../../move_to_foreman/common/helpers';
+import { apiError } from '../../../utils/helpers';
 
 const getContentViewDetails = cvId => get({
   type: API_OPERATIONS.GET,

@@ -8,69 +8,53 @@ import {
   TextListVariants,
   TextListItem,
   TextListItemVariants,
-  Tooltip,
-  TooltipPosition,
 } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import PropTypes from 'prop-types';
 
 import { updateContentView } from './ContentViewDetailActions';
 import { selectCVUpdating } from './ContentViewDetailSelectors';
-import EditableTextInput from '../../../components/EditableTextInput';
 import Loading from '../../../components/Loading';
-import EditableCheckbox from '../../../components/EditableCheckbox';
 import ContentViewIcon from '../components/ContentViewIcon';
+import ActionableDetail from './ActionableDetail';
 import './contentViewInfo.scss';
 
-const ContentViewInfo = ({ cvId, info, composite }) => {
+const ContentViewInfo = ({ cvId, details }) => {
   const dispatch = useDispatch();
   const updating = useSelector(state => selectCVUpdating(state));
+  const {
+    name,
+    label,
+    description,
+    composite,
+    solve_dependencies: solveDependencies,
+    auto_publish: autoPublish,
+  } = details;
+
+  const autoPublishTooltip = __('Applicable only for composite views. Auto publish composite ' +
+    'view when a new version of a component content view is created. Also note auto publish will ' +
+    'only happen when the component is marked "latest".');
+
+  const solveDependenciesTooltip = __('This option will solve RPM and Module Stream dependencies ' +
+    'on every publish of this Content View. Dependency solving significantly increases publish ' +
+    'time (publishes can take over three times as long) and filters will be ignored when adding ' +
+    'packages to solve dependencies. Also, certain scenarios involving errata may still cause ' +
+    'dependency errors.');
+
 
   if (updating) return <Loading size="sm" showText={false} />;
+  const onEdit = (val, attribute) => dispatch(updateContentView(cvId, { [attribute]: val }));
   return (
     <TextContent>
       <TextList component={TextListVariants.dl}>
-       {Object.keys(info).map((key) => {
-          const onEdit = val => dispatch(updateContentView(cvId, { [key]: val }));
-          const {
-            label,
-            value,
-            textArea = false,
-            editable = true,
-            boolean = false,
-            tooltip,
-          } = info[key];
-          const displayProps = {
-            label: key,
-            value,
-            onEdit,
-            editable,
-          };
-
-          return (
-            <React.Fragment key={key}>
-              <TextListItem component={TextListItemVariants.dt}>
-                {label}
-                {tooltip &&
-                <span className="foreman-spaced-icon">
-                  <Tooltip
-                    position={TooltipPosition.top}
-                    content={tooltip}
-                  >
-                    <OutlinedQuestionCircleIcon />
-                  </Tooltip>
-                </span>
-              }
-              </TextListItem>
-              <TextListItem component={TextListItemVariants.dd} className={"foreman-spaced-list"}>
-                {(() => {
-                  if (boolean) return <EditableCheckbox {...displayProps} />;
-                  return <EditableTextInput {...{ ...displayProps, textArea }} />;
-                })()}
-              </TextListItem>
-            </React.Fragment>
-          );
-        })}
+        <ActionableDetail label={__('Name')}
+                          attribute={'name'}
+                          onEdit={onEdit}
+                          value={name} />
+        <ActionableDetail label={__('Label')}
+                          attribute={'label'}
+                          value={label}
+                          onEdit={onEdit}
+                          editable={false} />
         <TextListItem component={TextListItemVariants.dt}>
           {__("Type")}
         </TextListItem>
@@ -80,6 +64,23 @@ const ContentViewInfo = ({ cvId, info, composite }) => {
             <FlexItem>{ composite ? "Composite" : "Component" }</FlexItem>
           </Flex>
         </TextListItem>
+        <ActionableDetail label={__('Description')}
+                          attribute={'description'}
+                          onEdit={onEdit}
+                          value={description} />
+        {composite ?
+          (<ActionableDetail label={__('Auto Publish')}
+                             attribute={'auto_publish'}
+                             boolean={true}
+                             value={autoPublish}
+                              onEdit={onEdit}
+                             tooltip={autoPublishTooltip} />) :
+          (<ActionableDetail label={__('Solve Dependencies')} 
+                             attribute={'solve_dependencies'}
+                             value={solveDependencies} 
+                             boolean={true}
+                             onEdit={onEdit}
+                             tooltip={solveDependenciesTooltip} />)}
       </TextList>
     </TextContent>
   );
@@ -87,15 +88,7 @@ const ContentViewInfo = ({ cvId, info, composite }) => {
 
 ContentViewInfo.propTypes = {
   cvId: PropTypes.number.isRequired,
-  info: PropTypes.objectOf(PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-    label: PropTypes.string,
-    boolean: PropTypes.bool,
-    editable: PropTypes.bool,
-    tooltip: PropTypes.string,
-    textArea: PropTypes.bool,
-  })).isRequired,
-  composite: PropTypes.bool.isRequired,
+  details: PropTypes.shape({}).isRequired,
 };
 
 export default ContentViewInfo;

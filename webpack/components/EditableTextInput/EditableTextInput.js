@@ -6,15 +6,15 @@ import Loading from '../Loading';
 import './editableTextInput.scss';
 
 const EditableTextInput = ({
-  onEdit, value, textArea, editable, label,
+  onEdit, value, textArea, editable, attribute,
 }) => {
   // Tracks input box state
   const [inputValue, setInputValue] = useState(value);
   const [editing, setEditing] = useState(false);
   const [working, setWorking] = useState(false);
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setWorking(true);
-    onEdit(inputValue);
+    await onEdit(inputValue, attribute);
     setWorking(false);
     setEditing(false);
   };
@@ -30,61 +30,57 @@ const EditableTextInput = ({
     };
 
     if (textArea) {
-      return <TextArea {...sharedProps} aria-label={`text area ${label}`} />;
+      return <TextArea {...sharedProps} aria-label={`text area ${attribute}`} />;
     }
-    return <TextInput {...sharedProps} type="text" aria-label={`text input ${label}`} />;
+    return <TextInput {...sharedProps} type="text" aria-label={`text input ${attribute}`} />;
   };
 
+  const displayValue = () => value ? value : <i>{__("None provided")}</i>;
+
   if (working) return <Loading size="sm" />;
+  if (editing) return (
+    <Split>
+      <SplitItem>
+        {textInput()}
+      </SplitItem>
+      <SplitItem>
+        <Button aria-label={`submit ${attribute}`} variant="plain" onClick={onSubmit}>
+          <CheckIcon />
+        </Button>
+      </SplitItem>
+      <SplitItem>
+        <Button aria-label={`clear ${attribute}`} variant="plain" onClick={onClear}>
+          <TimesIcon />
+        </Button>
+      </SplitItem>
+    </Split>
+  );
   return (
-    <Fragment>
-      {editing ?
-      (
-        <Split>
-          <SplitItem>
-            {textInput()}
-          </SplitItem>
-          <SplitItem>
-            <Button aria-label={`submit ${label}`} variant="plain" onClick={onSubmit}>
-              <CheckIcon />
-            </Button>
-          </SplitItem>
-          <SplitItem>
-            <Button aria-label={`clear ${label}`} variant="plain" onClick={onClear}>
-              <TimesIcon />
-            </Button>
-          </SplitItem>
-        </Split>
-      ) :
-      (
-        <Split>
-          <SplitItem>
-            <Text aria-label={`text value ${label}`} component={TextVariants.p}>
-              {value}
-            </Text>
-          </SplitItem>
-          {editable &&
-          <SplitItem>
-            <Button
-              className="foreman-edit-icon"
-              aria-label={`edit ${label}`}
-              variant="plain"
-              onClick={() => setEditing(true)}
-            >
-              <PencilAltIcon />
-            </Button>
-          </SplitItem>}
-        </Split>
-      )
-    }
-    </Fragment>
+    <Split>
+      <SplitItem>
+        <Text aria-label={`text value ${attribute}`} component={TextVariants.p}>
+          {displayValue()}
+        </Text>
+      </SplitItem>
+      {editable &&
+      <SplitItem>
+        <Button
+          className="foreman-edit-icon"
+          aria-label={`edit ${attribute}`}
+          variant="plain"
+          onClick={() => setEditing(true)}
+        >
+          <PencilAltIcon />
+        </Button>
+      </SplitItem>}
+    </Split>
   );
 };
 
 EditableTextInput.propTypes = {
   onEdit: PropTypes.func.isRequired,
   value: PropTypes.string,
-  label: PropTypes.string.isRequired,
+  attribute: PropTypes.string.isRequired,
   textArea: PropTypes.bool, // Is a text area instead of input when editing
   editable: PropTypes.bool,
 };

@@ -4,10 +4,10 @@ import { noop } from 'foremanReact/common/helpers';
 import PropTypes from 'prop-types';
 
 const EditableCheckbox = ({
-  value, label, onEdit, editable,
+  value, attribute, onEdit, editable,
 }) => {
   const boolToYesNo = v => (v ? 'Yes' : 'No');
-  const identifier = `checkbox-${label}`;
+  const identifier = `checkbox-${attribute}`;
 
   return (
     <Fragment>
@@ -16,7 +16,7 @@ const EditableCheckbox = ({
           id={identifier}
           aria-label={identifier}
           isChecked={value}
-          onChange={v => onEdit(v)}
+          onChange={v => onEdit(v, attribute)}
         /> :
       boolToYesNo(value)
     }
@@ -26,13 +26,13 @@ const EditableCheckbox = ({
 
 EditableCheckbox.propTypes = {
   value: PropTypes.bool.isRequired,
-  label: PropTypes.string,
+  attribute: PropTypes.string,
   onEdit: PropTypes.func,
   editable: PropTypes.bool,
 };
 
 EditableCheckbox.defaultProps = {
-  label: '',
+  attribute: '',
   onEdit: noop,
   editable: false,
 };

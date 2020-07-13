@@ -13,57 +13,11 @@ import TabbedView from '../../../components/TabbedView/TabbedView';
 const ContentViewDetails = ({ match }) => {
   const cvId = parseInt(match.params.id, 10);
   const details = useSelector(state => selectCVDetails(state, cvId), shallowEqual);
-  const {
-    name,
-    label,
-    description,
-    composite,
-    solve_dependencies: solveDependencies,
-    auto_publish: autoPublish,
-  } = details;
-  const info = {
-    name: {
-      value: name,
-      label: __('Name'),
-    },
-    label: {
-      value: label,
-      label: __('Label'),
-      editable: false,
-    },
-    description: {
-      value: description,
-      label: __('Description'),
-      textArea: true,
-    },
-  };
-
-  if (composite) {
-    info.auto_publish = {
-      value: autoPublish,
-      label: __('Auto Publish'),
-      boolean: true,
-      tooltip: __('Applicable only for composite views. Auto publish composite view when a new ' +
-                  'version of a component content view is created. Also note auto publish will ' +
-                  'only happen when the component is marked "latest".'),
-    }
-  } else {
-    info.solve_dependencies = {
-      value: solveDependencies,
-      label: __('Solve dependencies'),
-      boolean: true,
-      tooltip: __('This option will solve RPM and Module Stream dependencies on every publish of ' +
-               'this Content View. Dependency solving significantly increases publish time ' +
-               '(publishes can take over three times as long) and filters will be ignored when ' +
-               'adding packages to solve dependencies. Also, certain scenarios involving errata ' +
-               'may still cause dependency errors.'),
-    }
-  }
-
+  const { name } = details
   const tabs = [
     {
       title: __('Details'),
-      content: <ContentViewInfo {...{ info, cvId, composite}} />,
+      content: <ContentViewInfo {...{cvId, details}} />,
     },
     {
       title: __('Versions'),
