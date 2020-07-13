@@ -50,11 +50,12 @@ const ContentViewInfo = ({ cvId, details }) => {
                           attribute={'name'}
                           onEdit={onEdit}
                           value={name} />
-        <ActionableDetail label={__('Label')}
-                          attribute={'label'}
-                          value={label}
-                          onEdit={onEdit}
-                          editable={false} />
+        <TextListItem component={TextListItemVariants.dt}>
+          {__("Label")}
+        </TextListItem>
+        <TextListItem component={TextListItemVariants.dd} className={"foreman-spaced-list"}>
+          {label}
+        </TextListItem>
         <TextListItem component={TextListItemVariants.dt}>
           {__("Type")}
         </TextListItem>

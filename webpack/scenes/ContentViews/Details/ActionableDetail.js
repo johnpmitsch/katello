@@ -10,13 +10,8 @@ import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import EditableTextInput from '../../../components/EditableTextInput';
 import EditableCheckbox from '../../../components/EditableCheckbox';
 
-const ActionableDetail = ({ attribute, label, value, textArea=false, editable=true, boolean=false, tooltip, onEdit }) => {
-  const displayProps = {
-    attribute,
-    value,
-    onEdit,
-    editable,
-  };
+const ActionableDetail = ({ attribute, label, value, textArea=false, boolean=false, tooltip, onEdit }) => {
+  const displayProps = { attribute, value, onEdit };
 
   return (
     <React.Fragment key={label}>
@@ -34,10 +29,9 @@ const ActionableDetail = ({ attribute, label, value, textArea=false, editable=tr
       }
       </TextListItem>
       <TextListItem component={TextListItemVariants.dd} className={"foreman-spaced-list"}>
-        {(() => {
-          if (boolean) return <EditableCheckbox {...displayProps} />;
-          return <EditableTextInput {...{ ...displayProps, textArea, onEdit }} />;
-        })()}
+        {boolean ? 
+          <EditableCheckbox {...displayProps} /> :
+          <EditableTextInput {...{ ...displayProps, textArea, onEdit }} />}
       </TextListItem>
     </React.Fragment>
   );

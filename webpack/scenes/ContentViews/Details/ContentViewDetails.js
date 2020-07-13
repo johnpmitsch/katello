@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
-import { ContentViewIcon } from '../components/ContentViewIcon';
+import { Tabs, Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import PropTypes from 'prop-types';
 
 import DetailsContainer from './DetailsContainer';
 import ContentViewInfo from './ContentViewInfo';
 import { selectCVDetails } from './ContentViewDetailSelectors';
-import TabbedView from '../../../components/TabbedView/TabbedView';
+import TabWrapper from '../../../components/TabWrapper/TabWrapper';
 
 const ContentViewDetails = ({ match }) => {
   const cvId = parseInt(match.params.id, 10);
   const details = useSelector(state => selectCVDetails(state, cvId), shallowEqual);
+  const [activeTabKey, setActiveTabKey] = useState(0);
+  const handleTabClick = (_event, tabIndex) => setActiveTabKey(tabIndex);
+ 
   const { name } = details
   const tabs = [
-    {
-      title: __('Details'),
-      content: <ContentViewInfo {...{cvId, details}} />,
-    },
     {
       title: __('Versions'),
       content: <React.Fragment>Versions</React.Fragment>,
@@ -51,7 +49,11 @@ const ContentViewDetails = ({ match }) => {
             </TextContent>
           </GridItem>
           <GridItem span={12}>
-            <TabbedView tabs={tabs} />
+            <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
+              <TabWrapper title= {__("Details")} index={0}>
+                <ContentViewInfo {...{cvId, details}} />
+              </TabWrapper>
+            </Tabs>
           </GridItem>
         </React.Fragment>
       </DetailsContainer>
