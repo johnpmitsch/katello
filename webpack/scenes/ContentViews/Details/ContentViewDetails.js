@@ -7,16 +7,18 @@ import PropTypes from 'prop-types';
 import DetailsContainer from './DetailsContainer';
 import ContentViewInfo from './ContentViewInfo';
 import { selectCVDetails } from './ContentViewDetailSelectors';
-import TabWrapper from '../../../components/TabWrapper/TabWrapper';
+import TabbedView from '../../../components/TabbedView';
 
 const ContentViewDetails = ({ match }) => {
   const cvId = parseInt(match.params.id, 10);
   const details = useSelector(state => selectCVDetails(state, cvId), shallowEqual);
-  const [activeTabKey, setActiveTabKey] = useState(0);
-  const handleTabClick = (_event, tabIndex) => setActiveTabKey(tabIndex);
  
   const { name } = details
   const tabs = [
+    {
+      title: __('Details'),
+      content: <ContentViewInfo {...{ cvId, details }} />,
+    },
     {
       title: __('Versions'),
       content: <React.Fragment>Versions</React.Fragment>,
@@ -49,11 +51,7 @@ const ContentViewDetails = ({ match }) => {
             </TextContent>
           </GridItem>
           <GridItem span={12}>
-            <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-              <TabWrapper title= {__("Details")} index={0}>
-                <ContentViewInfo {...{cvId, details}} />
-              </TabWrapper>
-            </Tabs>
+            <TabbedView tabs={tabs} />
           </GridItem>
         </React.Fragment>
       </DetailsContainer>
