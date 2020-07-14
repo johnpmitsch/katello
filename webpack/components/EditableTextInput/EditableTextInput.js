@@ -1,6 +1,7 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { TextInput, TextArea, Text, TextVariants, Button, Split, SplitItem } from '@patternfly/react-core';
 import { TimesIcon, CheckIcon, PencilAltIcon } from '@patternfly/react-icons';
+import { translate as __ } from 'foremanReact/common/I18n';
 import PropTypes from 'prop-types';
 import Loading from '../Loading';
 import './editableTextInput.scss';
@@ -25,40 +26,42 @@ const EditableTextInput = ({
 
   const textInput = () => {
     const sharedProps = {
-      value: inputValue ? inputValue : "",
+      value: inputValue || '',
       onChange: v => setInputValue(v),
     };
 
     if (textArea) {
-      return <TextArea {...sharedProps} aria-label={`text area ${attribute}`} />;
+      return <TextArea {...sharedProps} aria-label={`${attribute} text area`} />;
     }
-    return <TextInput {...sharedProps} type="text" aria-label={`text input ${attribute}`} />;
+    return <TextInput {...sharedProps} type="text" aria-label={`${attribute} text input`} />;
   };
 
-  const displayValue = () => value ? value : <i>{__("None provided")}</i>;
+  const displayValue = () => (value || <i>{__('None provided')}</i>);
 
   if (working) return <Loading size="sm" />;
-  if (editing) return (
-    <Split>
-      <SplitItem>
-        {textInput()}
-      </SplitItem>
-      <SplitItem>
-        <Button aria-label={`submit ${attribute}`} variant="plain" onClick={onSubmit}>
-          <CheckIcon />
-        </Button>
-      </SplitItem>
-      <SplitItem>
-        <Button aria-label={`clear ${attribute}`} variant="plain" onClick={onClear}>
-          <TimesIcon />
-        </Button>
-      </SplitItem>
-    </Split>
-  );
+  if (editing) {
+    return (
+      <Split>
+        <SplitItem>
+          {textInput()}
+        </SplitItem>
+        <SplitItem>
+          <Button aria-label={`submit ${attribute}`} variant="plain" onClick={onSubmit}>
+            <CheckIcon />
+          </Button>
+        </SplitItem>
+        <SplitItem>
+          <Button aria-label={`clear ${attribute}`} variant="plain" onClick={onClear}>
+            <TimesIcon />
+          </Button>
+        </SplitItem>
+      </Split>
+    );
+  }
   return (
     <Split>
       <SplitItem>
-        <Text aria-label={`text value ${attribute}`} component={TextVariants.p}>
+        <Text aria-label={`${attribute} text value`} component={TextVariants.p}>
           {displayValue()}
         </Text>
       </SplitItem>

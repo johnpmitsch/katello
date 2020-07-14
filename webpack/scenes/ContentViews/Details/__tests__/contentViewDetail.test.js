@@ -70,14 +70,14 @@ test('Can edit text details such as name', async (done) => {
   assertNockRequest(afterUpdateScope, done);
 });
 
-test('Can edit boolean details such as force puppet environment', async (done) => {
-  const updatedCVDetails = { ...cvDetailData, force_puppet_environment: true };
+test.only('Can edit boolean details such as solve dependencies', async (done) => {
+  const updatedCVDetails = { ...cvDetailData, solve_dependencies: true };
   const getscope = nockInstance
     .get(cvDetailsPath)
     .query(true)
     .reply(200, cvDetailData);
   const updatescope = nockInstance
-    .put(cvDetailsPath, { force_puppet_environment: true })
+    .put(cvDetailsPath, { solve_dependencies: true })
     .reply(200, updatedCVDetails);
   const afterUpdateScope = nockInstance
     .get(cvDetailsPath)
@@ -89,11 +89,11 @@ test('Can edit boolean details such as force puppet environment', async (done) =
     renderOptions,
   );
 
-  const checkboxLabel = 'checkbox-force_puppet_environment';
-  await waitFor(() => expect(getByLabelText(checkboxLabel)).toBeInTheDocument());
-  expect(getByLabelText(checkboxLabel).checked).toBeFalsy();
-  fireEvent.click(getByLabelText(checkboxLabel));
-  await waitFor(() => expect(getByLabelText(checkboxLabel).checked).toBeTruthy());
+  const checkboxLabel = 'checkbox solve_dependencies';
+  await waitFor(() => expect(getByLabelText(`${checkboxLabel} on`)).toBeInTheDocument());
+  expect(getByLabelText(`${checkboxLabel} on`).checked).toBeFalsy();
+  fireEvent.click(getByLabelText(`${checkboxLabel} on`));
+  await waitFor(() => expect(getByLabelText(`${checkboxLabel} off`).checked).toBeTruthy());
 
   assertNockRequest(getscope);
   assertNockRequest(updatescope);

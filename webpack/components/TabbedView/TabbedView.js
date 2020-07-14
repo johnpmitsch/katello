@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab, TabTitleText } from '@patternfly/react-core';
-import './TabbedView.scss'
+import './TabbedView.scss';
 
 const TabbedView = ({ tabs }) => {
   const [activeTabKey, setActiveTabKey] = useState(0);

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { Tabs, Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
+import { Grid, GridItem, TextContent, Text, TextVariants } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import PropTypes from 'prop-types';
 
@@ -12,8 +12,8 @@ import TabbedView from '../../../components/TabbedView';
 const ContentViewDetails = ({ match }) => {
   const cvId = parseInt(match.params.id, 10);
   const details = useSelector(state => selectCVDetails(state, cvId), shallowEqual);
- 
-  const { name } = details
+
+  const { name } = details;
   const tabs = [
     {
       title: __('Details'),

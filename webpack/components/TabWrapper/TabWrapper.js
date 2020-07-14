@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tab, TabTitleText } from '@patternfly/react-core';
-import "./TabWrapper.scss"
+import './TabWrapper.scss';
 
 // Wrapper for patternfly 4 tabs for styling and consistency purposes
 const TabWrapper = ({ children, title, index }) => (

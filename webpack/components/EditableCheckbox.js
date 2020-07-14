@@ -7,14 +7,15 @@ const EditableCheckbox = ({
   value, attribute, onEdit, editable,
 }) => {
   const boolToYesNo = v => (v ? 'Yes' : 'No');
-  const identifier = `checkbox-${attribute}`;
+  const identifier = `${attribute} switch`;
 
   return (
     <Fragment>
       {editable ?
         <Switch
           id={identifier}
-          aria-label={identifier}
+          label={`${identifier} on`}
+          labelOff={`${identifier} off`}
           isChecked={value}
           onChange={v => onEdit(v, attribute)}
         /> :

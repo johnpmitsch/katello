@@ -10,6 +10,7 @@ import {
   TextListItemVariants,
 } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
+import { translate as __ } from 'foremanReact/common/I18n';
 
 import { updateContentView } from './ContentViewDetailActions';
 import { selectCVUpdating } from './ContentViewDetailSelectors';
@@ -46,42 +47,52 @@ const ContentViewInfo = ({ cvId, details }) => {
   return (
     <TextContent>
       <TextList component={TextListVariants.dl}>
-        <ActionableDetail label={__('Name')}
-                          attribute={'name'}
-                          onEdit={onEdit}
-                          value={name} />
+        <ActionableDetail
+          label={__('Name')}
+          attribute="name"
+          onEdit={onEdit}
+          value={name}
+        />
         <TextListItem component={TextListItemVariants.dt}>
-          {__("Label")}
+          {__('Label')}
         </TextListItem>
-        <TextListItem component={TextListItemVariants.dd} className={"foreman-spaced-list"}>
+        <TextListItem aria-label={'label text value'}
+                      component={TextListItemVariants.dd}
+                      className="foreman-spaced-list">
           {label}
         </TextListItem>
         <TextListItem component={TextListItemVariants.dt}>
-          {__("Type")}
+          {__('Type')}
         </TextListItem>
-        <TextListItem component={TextListItemVariants.dd} className={"foreman-spaced-list"}>
+        <TextListItem component={TextListItemVariants.dd} className="foreman-spaced-list">
           <Flex>
             <FlexItem spacer={{ default: 'spacerXs' }}><ContentViewIcon composite={composite} /></FlexItem>
-            <FlexItem>{ composite ? "Composite" : "Component" }</FlexItem>
+            <FlexItem>{ composite ? 'Composite' : 'Component' }</FlexItem>
           </Flex>
         </TextListItem>
-        <ActionableDetail label={__('Description')}
-                          attribute={'description'}
-                          onEdit={onEdit}
-                          value={description} />
+        <ActionableDetail
+          label={__('Description')}
+          attribute="description"
+          onEdit={onEdit}
+          value={description}
+        />
         {composite ?
-          (<ActionableDetail label={__('Auto Publish')}
-                             attribute={'auto_publish'}
-                             boolean={true}
-                             value={autoPublish}
-                              onEdit={onEdit}
-                             tooltip={autoPublishTooltip} />) :
-          (<ActionableDetail label={__('Solve Dependencies')} 
-                             attribute={'solve_dependencies'}
-                             value={solveDependencies} 
-                             boolean={true}
-                             onEdit={onEdit}
-                             tooltip={solveDependenciesTooltip} />)}
+          (<ActionableDetail
+            label={__('Auto Publish')}
+            attribute="auto_publish"
+            boolean
+            value={autoPublish}
+            onEdit={onEdit}
+            tooltip={autoPublishTooltip}
+          />) :
+          (<ActionableDetail
+            label={__('Solve Dependencies')}
+            attribute="solve_dependencies"
+            value={solveDependencies}
+            boolean
+            onEdit={onEdit}
+            tooltip={solveDependenciesTooltip}
+          />)}
       </TextList>
     </TextContent>
   );
@@ -89,7 +100,14 @@ const ContentViewInfo = ({ cvId, details }) => {
 
 ContentViewInfo.propTypes = {
   cvId: PropTypes.number.isRequired,
-  details: PropTypes.shape({}).isRequired,
+  details: PropTypes.shape({
+    name: PropTypes.string,
+    label: PropTypes.string,
+    description: PropTypes.string,
+    composite: PropTypes.bool,
+    solve_dependencies: PropTypes.bool,
+    auto_publish: PropTypes.bool,
+  }).isRequired,
 };
 
 export default ContentViewInfo;

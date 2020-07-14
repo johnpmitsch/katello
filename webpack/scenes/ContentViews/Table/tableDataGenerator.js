@@ -2,7 +2,7 @@ import React from 'react';
 import { compoundExpand, fitContent } from '@patternfly/react-table';
 import {
   ScreenIcon,
-  ContainerNodeIcon
+  ContainerNodeIcon,
 } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { urlBuilder } from 'foremanReact/common/urlHelpers';
@@ -24,7 +24,7 @@ export const buildColumns = () => [
 
 const buildRow = (contentView, openColumn) => {
   const {
-    id, composite, name, environments, repositories, versions, last_published: lastPublished,
+    id, composite, name, environments, versions, last_published: lastPublished,
   } = contentView;
   const row = [
     { title: <ContentViewIcon composite={composite ? true : undefined} /> },
