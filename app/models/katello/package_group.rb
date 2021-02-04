@@ -29,5 +29,9 @@ module Katello
       group = service_class.new(self.pulp_id)
       group.default_package_names + group.conditional_package_names + group.optional_package_names + group.mandatory_package_names
     end
+
+    def content_view_package_group_filters
+      Katello::ContentViewPackageGroupFilter.joins(:package_groups).where("#{self.class.table_name}.pulp_id" => self.pulp_id)
+    end
   end
 end

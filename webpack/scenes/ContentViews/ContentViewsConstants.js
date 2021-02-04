@@ -6,7 +6,8 @@ export const UPDATE_CONTENT_VIEW_SUCCESS = 'UPDATE_CONTENT_VIEW_SUCCESS';
 export const UPDATE_CONTENT_VIEW_FAILURE = 'UPDATE_CONTENT_VIEW_FAILURE';
 export const cvDetailsKey = cvId => `${CONTENT_VIEWS_KEY}_${cvId}`;
 export const cvDetailsRepoKey = cvId => `${CONTENT_VIEWS_KEY}_REPOSITORIES_${cvId}`;
-export const cvDetailsFilterKey = cvId => `${CONTENT_VIEWS_KEY}_FILTERS_${cvId}`;
+export const cvDetailsFiltersKey = cvId => `${CONTENT_VIEWS_KEY}_FILTERS_${cvId}`;
+export const cvFilterDetailsKey = (cvId, filterId) => `${CONTENT_VIEWS_KEY}_${cvId}_FILTER_${filterId}`;
 
 // Repo added to content view status display and key
 export const ADDED = 'Added';
