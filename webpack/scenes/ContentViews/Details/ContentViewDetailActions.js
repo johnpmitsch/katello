@@ -82,7 +82,7 @@ export const getContentViewFilters = (cvId, params) => get({
 
 export const getContentViewFilterDetails = (cvId, filterId, params) => get({
   key: cvFilterDetailsKey(cvId, filterId),
-  params: { filterId: filterId, full_result: true, ...params},
+  params: { filterId: filterId, show_all_for: 'content_view_filter', include_filter_ids: true, ...params},
   errorToast: error => __(`Something went wrong while retrieving the content view filter! ${error}`),
   url: api.getApiUrl(`/package_groups`)
 })

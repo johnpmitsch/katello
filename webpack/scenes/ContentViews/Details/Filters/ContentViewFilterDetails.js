@@ -14,19 +14,19 @@ import {
   selectCVFilterDetailError,
 } from '../ContentViewDetailSelectors';
 import { getContentViewFilterDetails } from '../ContentViewDetailActions';
+import ContentViewFilterDetailsHeader from './ContentViewFilterDetailsHeader';
 
 const ContentViewFilterDetails = () => {
   const { id: cvId } = useParams();
   // should move to custom hook for hash and query params if we go with this approach
-  const { params: { subContentId } } = useUrlParamsWithHash();
-  const response = useSelector(state => selectCVFilterDetails(state, cvId, subContentId), shallowEqual);
-  const status = useSelector(state => selectCVFilterDetailStatus(state, cvId, subContentId), shallowEqual);
-  const error = useSelector(state => selectCVFilterDetailError(state, cvId, subContentId), shallowEqual);
+  const { params: { subContentId: filterId } } = useUrlParamsWithHash();
+  const response = useSelector(state => selectCVFilterDetails(state, cvId, filterId), shallowEqual);
+  const status = useSelector(state => selectCVFilterDetailStatus(state, cvId, filterId), shallowEqual);
+  const error = useSelector(state => selectCVFilterDetailError(state, cvId, filterId), shallowEqual);
   const [rows, setRows] = useState([]);
   const [metadata, setMetadata] = useState({});
   const [searchQuery, updateSearchQuery] = useState('');
   const loading = status === STATUS.PENDING;
-  console.log(response);
 
   const columnHeaders = [
     __('Name'),
@@ -40,13 +40,21 @@ const ContentViewFilterDetails = () => {
     const newRows = [];
     console.log(results);
     results.forEach((packageGroups) => {
-      const { name, description, repository: { name: repositoryName, product: { name: productName }} } = packageGroups;
+      const {
+        name,
+        description,
+        repository: {
+          name: repositoryName,
+          product: { name: productName }
+        },
+        filter_ids: filterIds,
+      } = packageGroups;
       const cells = [
         { title: name },
         { title: productName },
         { title: repositoryName },
         { title: description},
-        { title: 'added' },
+        { title: filterIds.includes(parseInt(filterId)) ? 'added' : 'not added' },
       ];
 
       newRows.push({ cells });
@@ -58,7 +66,6 @@ const ContentViewFilterDetails = () => {
   useEffect(() => {
     const { results, ...meta } = response;
     setMetadata(meta);
-    console.log({ loading, results });
 
     if (!loading && results) {
       const newRows = buildRows(results);
@@ -72,26 +79,29 @@ const ContentViewFilterDetails = () => {
   const emptySearchBody = __('Try changing your search settings.');
 
   return (
-    <TableWrapper
-      {...{
-        rows,
-        metadata,
-        emptyContentTitle,
-        emptyContentBody,
-        emptySearchTitle,
-        emptySearchBody,
-        searchQuery,
-        updateSearchQuery,
-        error,
-        status,
-      }}
-      status={status}
-      onSelect={onSelect(rows, setRows)}
-      cells={columnHeaders}
-      variant={TableVariant.compact}
-      autocompleteEndpoint={`/package_groups/auto_complete_search?filterid=${subContentId}`}
-      fetchItems={params => getContentViewFilterDetails(cvId, subContentId, params)}
-    />);
+    <>
+      <ContentViewFilterDetailsHeader cvId={cvId} filterId={filterId} />
+      <TableWrapper
+        {...{
+          rows,
+          metadata,
+          emptyContentTitle,
+          emptyContentBody,
+          emptySearchTitle,
+          emptySearchBody,
+          searchQuery,
+          updateSearchQuery,
+          error,
+          status,
+        }}
+        status={status}
+        onSelect={onSelect(rows, setRows)}
+        cells={columnHeaders}
+        variant={TableVariant.compact}
+        autocompleteEndpoint={`/package_groups/auto_complete_search?filterid=${filterId}`}
+        fetchItems={params => getContentViewFilterDetails(cvId, filterId, params)}
+      />
+    </>);
 };
 
 export default ContentViewFilterDetails;
