@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { TableVariant } from '@patternfly/react-table';
+import { Tabs, Tab, TabTitleText, Grid, GridItem } from '@patternfly/react-core';
 import { STATUS } from 'foremanReact/constants';
 import { translate as __ } from 'foremanReact/common/I18n';
 
@@ -9,23 +10,25 @@ import useUrlParamsWithHash from '../../../../utils/useUrlParams';
 import onSelect from '../../../../components/Table/helpers';
 import TableWrapper from '../../../../components/Table/TableWrapper';
 import {
-  selectCVFilterDetails,
-  selectCVFilterDetailStatus,
-  selectCVFilterDetailError,
+  selectCVFilterPackageGroups,
+  selectCVFilterPackageGroupStatus,
+  selectCVFilterPackageGroupError,
 } from '../ContentViewDetailSelectors';
-import { getContentViewFilterDetails } from '../ContentViewDetailActions';
+import { getCVFilterPackageGroups } from '../ContentViewDetailActions';
 import ContentViewFilterDetailsHeader from './ContentViewFilterDetailsHeader';
+import AddedStatusLabel from '../../../../components/AddedStatusLabel';
 
 const ContentViewFilterDetails = () => {
   const { id: cvId } = useParams();
   // should move to custom hook for hash and query params if we go with this approach
   const { params: { subContentId: filterId } } = useUrlParamsWithHash();
-  const response = useSelector(state => selectCVFilterDetails(state, cvId, filterId), shallowEqual);
-  const status = useSelector(state => selectCVFilterDetailStatus(state, cvId, filterId), shallowEqual);
-  const error = useSelector(state => selectCVFilterDetailError(state, cvId, filterId), shallowEqual);
+  const response = useSelector(state => selectCVFilterPackageGroups(state, cvId, filterId), shallowEqual);
+  const status = useSelector(state => selectCVFilterPackageGroupStatus(state, cvId, filterId), shallowEqual);
+  const error = useSelector(state => selectCVFilterPackageGroupError(state, cvId, filterId), shallowEqual);
   const [rows, setRows] = useState([]);
   const [metadata, setMetadata] = useState({});
   const [searchQuery, updateSearchQuery] = useState('');
+  const [activeTabKey, setActiveTabKey] = useState(0);
   const loading = status === STATUS.PENDING;
 
   const columnHeaders = [
@@ -54,7 +57,7 @@ const ContentViewFilterDetails = () => {
         { title: productName },
         { title: repositoryName },
         { title: description},
-        { title: filterIds.includes(parseInt(filterId)) ? 'added' : 'not added' },
+        { title: <AddedStatusLabel added={filterIds.includes(parseInt(filterId))} /> },
       ];
 
       newRows.push({ cells });
@@ -79,29 +82,38 @@ const ContentViewFilterDetails = () => {
   const emptySearchBody = __('Try changing your search settings.');
 
   return (
-    <>
+    <Grid hasGutter>
       <ContentViewFilterDetailsHeader cvId={cvId} filterId={filterId} />
-      <TableWrapper
-        {...{
-          rows,
-          metadata,
-          emptyContentTitle,
-          emptyContentBody,
-          emptySearchTitle,
-          emptySearchBody,
-          searchQuery,
-          updateSearchQuery,
-          error,
-          status,
-        }}
-        status={status}
-        onSelect={onSelect(rows, setRows)}
-        cells={columnHeaders}
-        variant={TableVariant.compact}
-        autocompleteEndpoint={`/package_groups/auto_complete_search?filterid=${filterId}`}
-        fetchItems={params => getContentViewFilterDetails(cvId, filterId, params)}
-      />
-    </>);
+      <GridItem span={12}>
+        <Tabs activeKey={activeTabKey} onSelect={(_event, eventKey) => setActiveTabKey(eventKey)}>
+          <Tab eventKey={0} title={<TabTitleText>{"Package groups"}</TabTitleText>}>
+            <div className={"tab-body-with-spacing"}>
+              <TableWrapper
+                {...{
+                  rows,
+                  metadata,
+                  emptyContentTitle,
+                  emptyContentBody,
+                  emptySearchTitle,
+                  emptySearchBody,
+                  searchQuery,
+                  updateSearchQuery,
+                  error,
+                  status,
+                }}
+                status={status}
+                onSelect={onSelect(rows, setRows)}
+                cells={columnHeaders}
+                variant={TableVariant.compact}
+                autocompleteEndpoint={`/package_groups/auto_complete_search?filterid=${filterId}`}
+                fetchItems={params => getCVFilterPackageGroups(cvId, filterId, params)}
+              />
+            </div>
+          </Tab>
+        </Tabs>
+      </GridItem>
+    </Grid>
+  );
 };
 
 export default ContentViewFilterDetails;

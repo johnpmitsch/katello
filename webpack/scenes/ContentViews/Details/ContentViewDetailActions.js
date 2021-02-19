@@ -13,6 +13,7 @@ import {
   cvDetailsRepoKey,
   cvDetailsFiltersKey,
   cvFilterDetailsKey,
+  cvFilterPackageGroupsKey,
 } from '../ContentViewsConstants';
 import api from '../../../services/api';
 
@@ -80,8 +81,15 @@ export const getContentViewFilters = (cvId, params) => get({
   url: api.getApiUrl('/content_view_filters'),
 });
 
-export const getContentViewFilterDetails = (cvId, filterId, params) => get({
+export const getCVFilterDetails = (cvId, filterId, params) => get({
   key: cvFilterDetailsKey(cvId, filterId),
+  params: { contentViewId: cvId, ...params},
+  errorToast: error => __(`Something went wrong while retrieving the content view filter! ${error}`),
+  url: api.getApiUrl(`/content_view_filters/${filterId}`),
+})
+
+export const getCVFilterPackageGroups = (cvId, filterId, params) => get({
+  key: cvFilterPackageGroupsKey(cvId, filterId),
   params: { filterId: filterId, show_all_for: 'content_view_filter', include_filter_ids: true, ...params},
   errorToast: error => __(`Something went wrong while retrieving the content view filter! ${error}`),
   url: api.getApiUrl(`/package_groups`)
