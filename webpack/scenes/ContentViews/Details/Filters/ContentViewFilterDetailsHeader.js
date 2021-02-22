@@ -3,6 +3,7 @@ import { useDispatch, shallowEqual, useSelector } from 'react-redux';
 import { Split, SplitItem, GridItem, TextContent, Text, TextVariants, Label } from '@patternfly/react-core';
 import { STATUS } from 'foremanReact/constants';
 
+import RepoIcon from '../Repositories/RepoIcon';
 import {
   selectCVFilterDetails,
   selectCVFilterDetailStatus,
@@ -12,7 +13,7 @@ import { getCVFilterDetails } from '../ContentViewDetailActions';
 import { capitalize } from '../../../../utils/helpers';
 //import { Loading } from '../../../../components/Loading';
 
-const ContentViewFilterDetailsHeader = ({ cvId, filterId }) => {
+const ContentViewFilterDetailsHeader = ({ cvId, filterId, repoType }) => {
   const dispatch = useDispatch();
   const [details, setDetails] = useState({});
   const response = useSelector(state => selectCVFilterDetails(state, cvId, filterId), shallowEqual);
@@ -28,7 +29,7 @@ const ContentViewFilterDetailsHeader = ({ cvId, filterId }) => {
     if (loaded) setDetails(response);
   }, [JSON.stringify(response), loaded])
 
-  const { name, inclusion, description, type } = details;
+  const { type, name, inclusion, description } = details;
 
   if (loaded) {
     return (
@@ -42,6 +43,9 @@ const ContentViewFilterDetailsHeader = ({ cvId, filterId }) => {
           <Split hasGutter>
             <SplitItem>
               <Label color="blue">{inclusion ? "Include" : "Exclude" }</Label>
+            </SplitItem>
+            <SplitItem>
+              <RepoIcon type={repoType} />
             </SplitItem>
             <SplitItem>
               <Text component={TextVariants.p}>
@@ -58,7 +62,6 @@ const ContentViewFilterDetailsHeader = ({ cvId, filterId }) => {
       </>
     );
   } else {
-    // TODO figure out why spinner isn't working here
     return (<div>{'Loading...'}</div>);
   }
 }

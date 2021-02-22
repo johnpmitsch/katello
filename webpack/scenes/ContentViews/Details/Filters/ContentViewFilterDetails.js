@@ -20,8 +20,7 @@ import AddedStatusLabel from '../../../../components/AddedStatusLabel';
 
 const ContentViewFilterDetails = () => {
   const { id: cvId } = useParams();
-  // should move to custom hook for hash and query params if we go with this approach
-  const { params: { subContentId: filterId } } = useUrlParamsWithHash();
+  const { params: { subContentId: filterId, repoType } } = useUrlParamsWithHash();
   const response = useSelector(state => selectCVFilterPackageGroups(state, cvId, filterId), shallowEqual);
   const status = useSelector(state => selectCVFilterPackageGroupStatus(state, cvId, filterId), shallowEqual);
   const error = useSelector(state => selectCVFilterPackageGroupError(state, cvId, filterId), shallowEqual);
@@ -83,7 +82,7 @@ const ContentViewFilterDetails = () => {
 
   return (
     <Grid hasGutter>
-      <ContentViewFilterDetailsHeader cvId={cvId} filterId={filterId} />
+      <ContentViewFilterDetailsHeader cvId={cvId} filterId={filterId} repoType={repoType} />
       <GridItem span={12}>
         <Tabs activeKey={activeTabKey} onSelect={(_event, eventKey) => setActiveTabKey(eventKey)}>
           <Tab eventKey={0} title={<TabTitleText>{"Package groups"}</TabTitleText>}>
