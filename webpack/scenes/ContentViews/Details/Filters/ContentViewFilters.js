@@ -19,7 +19,7 @@ import {
 import { truncate } from '../../../../utils/helpers';
 import ContentType from './ContentType';
 
-const cvFilterUrl = (cvId, filterId, type) => `/labs/content_views/${cvId}#filters?subContentId=${filterId}&repoType=${type}`;
+const cvFilterUrl = (cvId, filterId) => `/labs/content_views/${cvId}#filters?subContentId=${filterId}`;
 
 const ContentViewFilters = ({ cvId }) => {
   const response = useSelector(state => selectCVFilters(state, cvId), shallowEqual);
@@ -48,7 +48,7 @@ const ContentViewFilters = ({ cvId }) => {
       if (filter.type === 'erratum' && filter.rules[0].types) errataByDate = true;
 
       const cells = [
-        { title: <Link to={cvFilterUrl(cvId, id, type)}>{name}</Link> },
+        { title: <Link to={cvFilterUrl(cvId, id)}>{name}</Link> },
         truncate(description || ''),
         { title: <LongDateTime date={updatedAt} showRelativeTimeTooltip /> },
         { title: <ContentType type={type} errataByDate={errataByDate} /> },
