@@ -16,8 +16,9 @@ import ContentViewFilterDetailsHeader from './ContentViewFilterDetailsHeader';
 import CVPackageGroupFilterContent from './CVPackageGroupFilterContent';
 
 const ContentViewFilterDetails = () => {
-  const { id: cvId } = useParams();
-  const { params: { subContentId: filterId } } = useUrlParamsWithHash();
+  // TODO remove default params for testing
+  const { id: cvId=1 } = useParams();
+  const { params: { subContentId: filterId=1 } } = useUrlParamsWithHash();
   const dispatch = useDispatch();
   const [details, setDetails] = useState({});
   const response = useSelector(state => selectCVFilterDetails(state, cvId, filterId), shallowEqual);

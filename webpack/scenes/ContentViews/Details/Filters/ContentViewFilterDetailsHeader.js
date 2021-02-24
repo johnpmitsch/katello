@@ -9,6 +9,7 @@ import { repoType, capitalize } from '../../../../utils/helpers';
 const ContentViewFilterDetailsHeader = ({ details }) => {
   const { type, name, inclusion, description } = details;
   const repositoryType = repoType(type);
+  const displayedType = type ? capitalize(type.replace(/_/g, " ")) : "";
 
   return (
     <>
@@ -27,7 +28,7 @@ const ContentViewFilterDetailsHeader = ({ details }) => {
           </SplitItem>
           <SplitItem>
             <Text component={TextVariants.p}>
-              {type ? capitalize(type.replaceAll("_", " ")) : ''}
+              {displayedType}
             </Text>
           </SplitItem>
         </Split>
